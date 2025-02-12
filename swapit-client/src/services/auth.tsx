@@ -1,23 +1,18 @@
-import axios from "axios";
+import axiosInstance from "@/utils/axiosInstence"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
-
-export const registerUser = async (data: { fullName: string; email: string; password: string }) => {
-  const response = await axios.post(`${API_BASE_URL}/auth/register`, data);
+export const registerUser = async (data: { name: string; email: string; password: string }) => {
+  // console.log("data is got from register form",data)
+  const response = await axiosInstance.post("/register-user", data);
+  // console.log("data is got from server",response.data)
   return response.data;
 };
 
-
-export const loginUser = async (data: { email: string; password: string }) => {
-  const response = await fetch("/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+export const login = async (data: { email: string; password: string }) => {
+  console.log("data is got from login form",data)
+  const response = await axiosInstance.post("/login", data,{
+    withCredentials: true,
   });
+  console.log("Login Response:", response.data);
+  return response.data;
+};
 
-  if (!response.ok) {
-    throw new Error("Invalid credentials");
-  }
-
-  return response.json();
-}; 

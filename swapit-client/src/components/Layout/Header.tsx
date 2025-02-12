@@ -1,8 +1,16 @@
 "use client";
 import Link from "next/link";
 import {Bell, ShoppingBasket, Search, User} from "lucide-react"
+import { usePathname, useRouter } from "next/navigation";
 
 const Header = () => {
+  const pathName = usePathname()
+  const router = useRouter();
+  const adminRoutes = ["/dashboard", "/users", "/products", "/orders", "/addProduct"];
+
+  if(pathName === "/login" || pathName === "/user-register" || adminRoutes.includes(pathName)){
+    return null
+  }
     return (
       <header className="bg-[#ffffff] text-black py-4">
         <div className="container mx-auto flex justify-between items-center px-6">
@@ -10,18 +18,38 @@ const Header = () => {
 
         <Link href="/" className="flex items-center">
             {/* <Image src="/LOGO-removebg-preview 3.png" alt="Swapify Logo"/> */}
-            <Image></Image>
+            
         </Link>
 
   
 
-          <nav className="hidden md:flex space-x-6 text-lg">
-            <Link href="/shop" className="hover:text-white transition">Shop</Link>
-            <span className="border-l text-black h-6"></span>
-            <Link href="/our-story" className="hover:text-white transition">Our Story</Link>
-            <span className="border-l text-black h-6"></span>
-            <Link href="/contact" className="hover:text-white transition">Contact</Link>
-          </nav>
+        <nav className="hidden md:flex space-x-6 text-lg">
+        <button 
+        onClick={() => router.push("/")} 
+        className="hover:text-white transition"
+      >
+        Home
+      </button>
+
+      <span className="border-l text-black h-6"></span>
+
+      <button 
+        onClick={() => router.push("/shop")} 
+        className="hover:text-white transition"
+      >
+        Shop
+      </button>
+
+      <span className="border-l text-black h-6"></span>
+
+      <button 
+        onClick={() => router.push("/our-story")} 
+        className="hover:text-white transition"
+      >
+        Our Story
+      </button>
+
+    </nav>
   
           {/* Icons */}
           <div className="flex items-center space-x-4">

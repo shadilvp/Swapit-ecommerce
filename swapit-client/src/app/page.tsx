@@ -9,10 +9,10 @@ const Home = () => {
                 </p>
         
                 <div className="space-x-4">
-                    <Link href="/auth/userRegister" className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    <Link href="/user-register" className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
                         Sign Up
                     </Link>
-                    <Link href="/auth/login" className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                    <Link href="/login" className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
                         Login
                     </Link>
                 </div>

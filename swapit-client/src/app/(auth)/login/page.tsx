@@ -4,30 +4,45 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation"; 
 import { useMutation } from "@tanstack/react-query";
-import { loginUser } from "@/services/auth";
+import { login } from "@/services/auth";
+import { useState, useEffect } from "react";
 
-const UserRegister = () => {
+
+const loginPage = () => {
   const router = useRouter();
+  const [bgImage, setBgImage] = useState<string>("");
+
+  useEffect(() => {
+    const updateBackground = () => {
+      setBgImage(window.innerWidth >= 500 ? "url('/Web_Photo_Editor 1@2x (1).png')" : "url('freepik__adjust__49700.png')");
+    };
+
+    updateBackground();
+    window.addEventListener("resize", updateBackground);
+
+    return () => window.removeEventListener("resize", updateBackground); 
+  }, []);
 
   const mutation = useMutation({
-    mutationFn: loginUser,
-    onSuccess: () => {
-        router.push("/auth/login");
+    mutationFn: login,
+    onSuccess: (data) => {
+      console.log("Login Successful:", data);
+  
+      if (data.role === "admin") {
+        router.push("/dashboard");
+      } else {
+        router.push("/");
+      }
     },
     onError: (error) => {
-        console.error("Registration failed:", error);
+      console.error("Login failed:", error);
     },
-    });
+  });
 
 
   return (
     <div className="flex h-screen w-full bg-no-repeat bg-cover "
-    style={{
-      backgroundImage:
-        window.innerWidth >= 500
-          ? "url('/Web_Photo_Editor 1@2x (1).png')"
-          : "url('freepik__adjust__49700.png')",
-    }}
+    style={{ backgroundImage: bgImage }}
     >
 
 <div 
@@ -113,4 +128,4 @@ const UserRegister = () => {
   );
 };
 
-export default UserRegister;
+export default loginPage;

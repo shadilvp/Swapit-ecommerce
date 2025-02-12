@@ -24,6 +24,12 @@ const userSchema = new mongoose.Schema(
             default: "user",
             required:true
         },
+        profileImage: {
+            type: String,
+        },
+        normalImage: {
+            type: String
+        },
         isBlock: {
             type: Boolean,
             default: false,

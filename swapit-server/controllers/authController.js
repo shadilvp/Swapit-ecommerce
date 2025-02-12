@@ -30,13 +30,8 @@ const generateRefreshToken = (user) => {
 
 export const userRegister = async (req, res) => {
     const { name, email, password } = req.body;
+    console.log(name, email, password)
 
-    const { error } = validateUser(req.body)
-    if (error) {
-        return res.status(400).json({ success: false, message: error.details[0].message });
-    }
-
-   //data recieved
     console.log('Received data:', { name, email, password });
 
     const currentUser = await User.findOne({ email });
@@ -120,6 +115,22 @@ export const login = async (req, res) => {
     user.refreshToken = refreshToken;
     await user.save();
 
+
+    res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: process.env.COOKIE_FLAG,
+        sameSite: "Strict",
+        maxAge: 15 * 60 * 1000,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.COOKIE_FLAG,
+        sameSite: "Strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+
     if (role === "admin") {
         return res.status(200).json({
             success: true,
@@ -145,8 +156,6 @@ export const login = async (req, res) => {
                 email: user.email,
                 role: user.role,
             },
-            accessToken,
-            refreshToken,
         });
     }
 };
@@ -167,7 +176,14 @@ export const refreshAccessToken = async (req, res) => {
         }
 
         const newAccessToken = generateAccessToken(user);
-        res.json({ accessToken: newAccessToken });
+        res.cookie("accessToken", newAccessToken, {
+            httpOnly: true,
+            secure: process.env.COOKIE_FLAG,
+            sameSite: "Strict",
+            maxAge: 15 * 60 * 1000,
+        });
+
+        return res.status(200).json({ accessToken: newAccessToken });
 
     } catch (error) {
 

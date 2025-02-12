@@ -5,14 +5,29 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation"; 
 import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "@/services/auth";
+import { useState, useEffect } from "react";
 
 const UserRegister = () => {
   const router = useRouter();
 
+  const [bgImage, setBgImage] = useState<string>("");
+
+  useEffect(() => {
+    const updateBackground = () => {
+      setBgImage(window.innerWidth >= 500 ? "url('/Web_Photo_Editor 1@2x (1).png')" : "url('freepik__adjust__49700.png')");
+    };
+
+    updateBackground();
+    window.addEventListener("resize", updateBackground);
+
+    return () => window.removeEventListener("resize", updateBackground); 
+  }, []);
+
+  
   const mutation = useMutation({
     mutationFn: registerUser,
     onSuccess: () => {
-        router.push("/auth/login");
+        router.push("/login");
     },
     onError: (error) => {
         console.error("Registration failed:", error);
@@ -22,12 +37,7 @@ const UserRegister = () => {
 
   return (
     <div className="flex h-screen w-full bg-no-repeat bg-cover "
-    style={{
-      backgroundImage:
-        window.innerWidth >= 500
-          ? "url('/Web_Photo_Editor 1@2x (1).png')"
-          : "url('freepik__adjust__49700.png')",
-    }}
+      style={{ backgroundImage: bgImage }}
     >
 
 <div 
@@ -40,20 +50,23 @@ const UserRegister = () => {
   <h2 className="text-2xl font-bold text-black text-center mb-6">Create Account</h2>
 
   <Formik
+
     initialValues={{
-      fullName: "",
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
     }}
+
     validationSchema={Yup.object({
-      fullName: Yup.string().required("Full name is required"),
+      name: Yup.string().required("Full name is required"),
       email: Yup.string().email("Invalid email address").required("Email is required"),
       password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password")], "Passwords must match")
         .required("Confirm password is required"),
     })}
+
     onSubmit={(values, { setSubmitting, setErrors }) => {
       mutation.mutate(values, {
         onError: (error: any) => {
@@ -69,10 +82,10 @@ const UserRegister = () => {
           <label className="block text-black">Full Name</label>
           <Field
             type="text"
-            name="fullName"
+            name="name"
             className="w-full px-3 py-2 border bg-[#B0BAC3] opacity-40 rounded-[50px] focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <ErrorMessage name="fullName" component="div" className="text-red-500 text-sm" />
+          <ErrorMessage name="name" component="div" className="text-red-500 text-sm" />
         </div>
 
         <div>
