@@ -8,6 +8,7 @@ dotenv.config()
 
 const JWT_SECRET = process.env.TOKEN_SECRET
 const JWT_REFRESH_SECRET = process.env.TOKEN_REFRESH_SECRET
+const isProduction = process.env.COOKIE_FLAG === "production"
 
 const generateAccessToken = (user) => {
     return jwt.sign(
@@ -90,6 +91,7 @@ export const adminRegister = async (req, res) => {
 //Login --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 export const login = async (req, res) => {
+    // console.log("Login attempt:", req.body);
     const { email, password } = req.body;
 
     let user = await Admin.findOne({ email }); // Check Admin first
@@ -118,14 +120,14 @@ export const login = async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        secure: process.env.COOKIE_FLAG,
+        secure: isProduction,
         sameSite: "Strict",
         maxAge: 15 * 60 * 1000,
     });
 
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: process.env.COOKIE_FLAG,
+        secure: isProduction,
         sameSite: "Strict",
         maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -163,13 +165,18 @@ export const login = async (req, res) => {
 //refresh Access Token --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 export const refreshAccessToken = async (req, res) => {
+
     const {refreshToken} = req.body;
     if (!refreshToken) return res.status(401).json({ message: "Refresh Token Required" });
 
     try {
         
         const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET)
+
         const user =   await User.findById(decoded.id)
+        if (!user) {
+            user = await Admin.findById(decoded.id);
+        }
 
         if (!user || user.refreshToken !== refreshToken) {
             return res.status(403).json({ message: "Invalid Refresh Token" });
@@ -178,7 +185,7 @@ export const refreshAccessToken = async (req, res) => {
         const newAccessToken = generateAccessToken(user);
         res.cookie("accessToken", newAccessToken, {
             httpOnly: true,
-            secure: process.env.COOKIE_FLAG,
+            secure: process.env.COOKIE_FLAG === "true",
             sameSite: "Strict",
             maxAge: 15 * 60 * 1000,
         });

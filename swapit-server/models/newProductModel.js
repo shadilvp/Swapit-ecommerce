@@ -13,7 +13,7 @@ const categories = {
 
 const validCategories = Object.keys(categories);
 
-const newProductSchema = mongoose.Schema(
+const newProductSchema = new mongoose.Schema(
     {
         name : {
             type:String,
@@ -28,12 +28,6 @@ const newProductSchema = mongoose.Schema(
         subCategory: {
             type: String,
             required: [true, "Product sub-category is required"],
-            validate: {
-                validator: function (value) {
-                    return categories[this.category]?.includes(value);
-                },
-                message: "Invalid sub-category for the selected category",
-            },
         },
         price:{
             type:Number,
@@ -51,11 +45,6 @@ const newProductSchema = mongoose.Schema(
             type: String,
             required:[true, "Product image URL is required"],
         },
-        quality: {
-            type:String,
-            default:"new",
-            required:true
-        },
         purchasedQuantity:{
             type:Number,
             default:0,
@@ -66,28 +55,14 @@ const newProductSchema = mongoose.Schema(
         }
     }  
 )
-const validateNewProduct = (NewProduct) => {
-    const schema = joi.object(
-        {
-            name : joi.string().min(3).required(),
-            category: joi.string().valid(...validCategories).required(),
-            subCategory: joi
-                .string()
-                .custom((value, helpers) => {
-                    const category = helpers.state.ancestors[0].category;
-                    if (!categories[category]?.includes(value)) {
-                        return helpers.message("Invalid sub-category for the selected category");
-                    }
-                    return value;
-                })
-                .required(),
-            price : joi.number().min(0).required(),
-            description : joi.string().min(10).required(),
-            quantity : joi.number().min(1).required(),
-            image : joi.string().uri().required(),
-        })
-        return schema.validate(NewProduct)
-}
+
+newProductSchema.pre("save", function (next) {
+    if (!categories[this.category]?.includes(this.subCategory)) {
+        return next(new Error("Invalid sub-category for the selected category"));
+    }
+    next();
+});
+
 
 const   NewProduct = mongoose.model("Product",newProductSchema)
-export  {NewProduct,validateNewProduct};
+export  {NewProduct};

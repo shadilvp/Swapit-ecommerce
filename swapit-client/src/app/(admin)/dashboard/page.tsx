@@ -1,6 +1,6 @@
 "use client";
 
-import { FiTruck, FiUsers, FiBox, FiStar  } from "react-icons/fi";
+import { FiTruck, FiUsers, FiBox } from "react-icons/fi";
 import { PiSwap } from "react-icons/pi";
 import { GiGreenhouse } from "react-icons/gi";
 import { GoGraph } from "react-icons/go";
@@ -19,51 +19,49 @@ const AdminDashboard = () => {
           <p className="text-black">Swapped Products: <span className="font-bold">$1234</span></p>
         </div>
 
-        {/* Column 2 - Total Orders & Resold Items */}
+
         <div className="bg-white p-6 rounded-lg shadow-lg flex items-center gap-4 transition-transform transform hover:scale-105">
           <FiTruck size={50} className="text-[#01BA6A]" />
           <div>
             <h3 className="text-lg font-semibold text-black">Total Orders</h3>
-            <p className="text-xl font-bold text-black">345</p>
+            <p className="text-xl font-bold text-black">000</p>
           </div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-lg flex items-center gap-4 transition-transform transform hover:scale-105">
           <FiBox size={50} className="text-[#01BA6A]" />
           <div>
             <h3 className="text-lg font-semibold text-black">Resold Items</h3>
-            <p className="text-xl font-bold text-black">345</p>
+            <p className="text-xl font-bold text-black">000</p>
           </div>
         </div>
 
-        {/* Column 3 - Total Customers & New Items */}
         <div className="bg-white p-6 rounded-lg shadow-lg flex items-center gap-4 transition-transform transform hover:scale-105">
           <FiUsers size={50} className="text-[#01BA6A]" />
           <div>
             <h3 className="text-lg font-semibold text-black">Total Customers</h3>
-            <p className="text-xl font-bold text-black">345</p>
+            <p className="text-xl font-bold text-black">000</p>
           </div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-lg flex items-center gap-4 transition-transform transform hover:scale-105">
           <FiBox size={50} className="text-[#01BA6A]" />
           <div>
             <h3 className="text-lg font-semibold text-black">New Items</h3>
-            <p className="text-xl font-bold text-black">345</p>
+            <p className="text-xl font-bold text-black">000</p>
           </div>
         </div>
 
-        {/* Column 4 - Swapped Items & Environmental Impact */}
         <div className="bg-white p-6 rounded-lg shadow-lg flex items-center gap-4 transition-transform transform hover:scale-105">
           <PiSwap size={50} className="text-[#01BA6A]" />
           <div>
             <h3 className="text-lg font-semibold text-black">Swapped Items</h3>
-            <p className="text-xl font-bold text-black">345</p>
+            <p className="text-xl font-bold text-black">000</p>
           </div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-lg flex items-center gap-4 transition-transform transform hover:scale-105">
           <GiGreenhouse size={50} className="text-[#01BA6A]" />
           <div>
             <h3 className="text-lg font-semibold text-black">Environmental Impact</h3>
-            <p className="text-xl font-bold text-black">0.007%</p>
+            <p className="text-xl font-bold text-black">0.00%</p>
           </div>
         </div>
       </div>
