@@ -1,19 +1,20 @@
 "use client"
 
 import { FiPlus } from "react-icons/fi";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { addProduct } from "@/services/product";
+import { addProduct, fetchCategories } from "@/services/product";
 
-const categories: Record<string, string[]> = {
-  fashion: ["men", "women", "kids", "others"],
-  books: ["fiction", "non-fiction", "educational", "others"],
-  sports: ["indoor", "outdoor", "gym", "others"],
-  electronics: ["fridge", "tv", "washingmachine", "others"],
-  mobiles: ["smartphones", "feature phones", "accessories", "others"],
-  furnitures: ["sofa", "table", "chair", "others"],
-};
+// const categories: Record<string, string[]> = {
+//   fashion: ["men", "women", "kids", "others"],
+//   books: ["fiction", "non-fiction", "educational", "others"],
+//   sports: ["indoor", "outdoor", "gym", "others"],
+//   electronics: ["fridge", "tv", "washingmachine", "others"],
+//   mobiles: ["smartphones", "feature phones", "accessories", "others"],
+//   furnitures: ["sofa", "table", "chair", "others"],
+// };
 
 
 const AddProduct = () => {
@@ -29,6 +30,11 @@ const AddProduct = () => {
     image: null as File | null,
   });
 
+  const { data: categories, isLoading, error } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -40,29 +46,32 @@ const AddProduct = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-   
-
     e.preventDefault();
-    
+  
     if (!formData.image) {
       alert("Product image is required");
       return;
     }
-
+  
     const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      data.append(key, value as any);
-    });
-
-
+    data.append("name", formData.name);
+    data.append("description", formData.description);
+    data.append("category", formData.category);
+    data.append("subCategory", formData.subCategory);
+    data.append("quantity", formData.quantity.toString());
+    data.append("price", formData.price.toString());
+    data.append("image", formData.image);
+  
+    for (let pair of data.entries()) {
+    }
+  
     try {
-      const response = await addProduct(formData);
+      const response = await addProduct(data);
       alert(response.message);
-      router.push("/newProducts");
+      router.push("/allProducts");
     } catch (error: any) {
       alert(error.message);
     }
-
   };
 
   return (
@@ -93,30 +102,38 @@ const AddProduct = () => {
 
         <div className="mt-4">
           <h2 className="text-xl font-semibold text-black mb-4">Category</h2>
-          <select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
-            className="w-full p-3 border border-gray-300 rounded-lg text-gray-700"
-          >
-            <option value="">Select Category</option>
-            {Object.keys(categories).map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-          <select
-            name="subCategory"
-            value={formData.subCategory}
-            onChange={handleChange}
-            required
-            className="w-full mt-3 p-3 border border-gray-300 rounded-lg text-gray-700"
-          >
-            <option value="">Select Subcategory</option>
-            {formData.category && categories[formData.category].map((sub) => (
+          {isLoading && <p>Loading categories...</p>}
+          {error && <p>Error loading categories</p>}
+
+      <select
+        name="category"
+        value={formData.category}
+        onChange={handleChange}
+        required
+      >
+        <option value="">Select Category</option>
+        {categories?.map((category: any) => (
+          <option key={category._id} value={category._id}>
+            {category.name}
+          </option>
+        ))}
+      </select>
+
+      <select
+        name="subCategory"
+        value={formData.subCategory}
+        onChange={handleChange}
+        required
+      >
+        <option value="">Select Subcategory</option>
+        {formData.category &&
+          categories
+            ?.find((cat: any) => cat._id === formData.category)
+            ?.subCategories.map((sub: string) => (
               <option key={sub} value={sub}>{sub}</option>
             ))}
-          </select>
+      </select>
+
         </div>
 
         <div className="mt-4">

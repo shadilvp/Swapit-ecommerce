@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 const Header = () => {
   const pathName = usePathname()
   const router = useRouter();
-  const adminRoutes = ["/dashboard", "/users", "/products", "/orders", "/addProduct"];
+  const adminRoutes = ["/dashboard", "/users", "/allProducts", "/orders", "/addProduct"];
 
   if(pathName === "/login" || pathName === "/user-register" || adminRoutes.includes(pathName)){
     return null

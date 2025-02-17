@@ -1,28 +1,40 @@
 'use client';
 
-import { useState } from 'react';
-import { FiHome, FiBox, FiUsers, FiShoppingCart, FiStar, FiLogOut, FiSearch, FiPlus } from 'react-icons/fi';
+import { JSX, useState } from 'react';
+import { FiHome, FiBox, FiUsers, FiShoppingCart, FiStar, FiLogOut, FiSearch, FiPlus, FiX } from 'react-icons/fi';
 import Image from 'next/image';
 import { useRouter } from "next/navigation";
 
-const AdminSidebar = () => {
-  const [active, setActive] = useState('Dashboard');
+interface AdminSidebarProps {
+  onClose: () => void;  // Function to close the sidebar
+}
+
+const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
+  const [active, setActive] = useState<string>('Dashboard');
   const router = useRouter();
 
-  const menuItems = [
-    { name: 'Dashboard', icon: <FiHome />, path:"/dashboard"},
-    { name: 'New Products', icon: <FiBox />, path:"/newProducts"},
-    { name: 'Add Product', icon: <FiPlus />, path:"/addProduct" },
-    { name: 'Old Products', icon: <FiBox />, path:"/oldProducts" },
-    { name: 'Customer', icon: <FiUsers />, path:"/customers" },
-    { name: 'Orders', icon: <FiShoppingCart />, path:"/orders" },
-    { name: 'Reviews', icon: <FiStar />, path:"/reviews" },
+  const menuItems: { name: string; icon: JSX.Element; path: string }[] = [
+    { name: 'Dashboard', icon: <FiHome />, path: "/dashboard" },
+    { name: 'All Products', icon: <FiBox />, path: "/allProducts" },
+    { name: 'Add Product', icon: <FiPlus />, path: "/addProduct" },
+    { name: 'Customers', icon: <FiUsers />, path: "/customers" },
+    { name: 'Orders', icon: <FiShoppingCart />, path: "/orders" },
+    { name: 'Reviews', icon: <FiStar />, path: "/reviews" },
   ];
 
   return (
-    <div className="fixed top-0 left-0 h-screen w-64 bg-green-500 text-white flex flex-col p-4 shadow-lg">
+    <div className="fixed top-0 left-0 h-screen w-64 bg-green-500 text-white flex flex-col p-4 shadow-lg transition-transform transform">
+      {/* Close Button */}
+      <button 
+        className="absolute top-4 right-4 text-white hover:text-gray-300 transition"
+        onClick={onClose} 
+        aria-label="Close Sidebar"
+      >
+        <FiX size={24} />
+      </button>
+
       {/* Logo */}
-      <div className="flex items-center justify-center mb-6">
+      <div className="flex items-center justify-center mb-6 mt-6">
         <h1 className="text-2xl font-bold">SWAPIFY</h1>
       </div>
 
@@ -50,9 +62,7 @@ const AdminSidebar = () => {
             }`}
             onClick={() => {
               setActive(item.name);
-              if (item.path) {
-                router.push(item.path);
-              }
+              router.push(item.path);
             }}
           >
             {item.icon}
@@ -73,7 +83,10 @@ const AdminSidebar = () => {
           />
           <span className="ml-3">Name</span>
         </div>
-        <div className="flex items-center p-3 rounded-lg cursor-pointer hover:bg-green-600">
+        <div 
+          className="flex items-center p-3 rounded-lg cursor-pointer hover:bg-green-600 transition"
+          onClick={() => console.log("Logging out...")}
+        >
           <FiLogOut />
           <span className="ml-3">Logout</span>
         </div>
