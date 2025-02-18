@@ -1,5 +1,5 @@
-import { User,validateUser } from "../models/userModel.js";
-import { Admin, validateAdmin } from "../models/adminModel.js";
+import { User,validateUser } from "../../models/userModel.js";
+import { Admin, validateAdmin } from "../../models/adminModel.js";
 import bcrypt from "bcrypt"
 import dotenv from "dotenv"
 import jwt from "jsonwebtoken"

@@ -1,4 +1,4 @@
-import { adminRegister, login, refreshAccessToken, userRegister } from "../controllers/authController.js";
+import { adminRegister, login, refreshAccessToken, userRegister } from "../controllers/shared/authController.js" ;
 import { asyncHandler } from "../utils/asyncHandler.js";
 import express from "express"
 

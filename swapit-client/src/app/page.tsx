@@ -1,7 +1,7 @@
 import Link from "next/link";
 const Home = () => {
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-500">
             <div className="max-w-3xl text-center p-6 bg-white shadow-lg rounded-lg">
                 <h1 className="text-4xl font-bold text-gray-800 mb-4">Welcome to Swapit</h1>
                 <p className="text-gray-600 mb-6">

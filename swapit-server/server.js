@@ -8,6 +8,7 @@ const port = process.env.PORT
 
 import authRouter from "./routes/authRouter.js"
 import productRouter from "./routes/productRouter.js"
+import adminRouter from "./routes/AdminRouter.js";
 import connectDB from "./config/db.js"
 import errorHandler from "./middlewares/errorHandler.js"
 
@@ -23,8 +24,9 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use('/api', authRouter)
+app.use('/api', authRouter) 
 app.use('/api', productRouter)
+app.use('/api',adminRouter)
 
 const startServer = (port) => {
     const server = app.listen(port, () => {

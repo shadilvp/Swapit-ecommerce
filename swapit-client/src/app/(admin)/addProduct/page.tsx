@@ -3,18 +3,9 @@
 import { FiPlus } from "react-icons/fi";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { addProduct, fetchCategories } from "@/services/product";
 
-// const categories: Record<string, string[]> = {
-//   fashion: ["men", "women", "kids", "others"],
-//   books: ["fiction", "non-fiction", "educational", "others"],
-//   sports: ["indoor", "outdoor", "gym", "others"],
-//   electronics: ["fridge", "tv", "washingmachine", "others"],
-//   mobiles: ["smartphones", "feature phones", "accessories", "others"],
-//   furnitures: ["sofa", "table", "chair", "others"],
-// };
 
 
 const AddProduct = () => {
@@ -62,9 +53,10 @@ const AddProduct = () => {
     data.append("price", formData.price.toString());
     data.append("image", formData.image);
   
-    for (let pair of data.entries()) {
-    }
-  
+    // for (let [key, value] of data.entries()) {
+    //   console.log(`${key}: ${value}`);
+    // }
+    
     try {
       const response = await addProduct(data);
       alert(response.message);

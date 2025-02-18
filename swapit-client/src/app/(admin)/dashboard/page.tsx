@@ -4,11 +4,16 @@ import { FiTruck, FiUsers, FiBox } from "react-icons/fi";
 import { PiSwap } from "react-icons/pi";
 import { GiGreenhouse } from "react-icons/gi";
 import { GoGraph } from "react-icons/go";
+import { useSidebarStore } from '@/store/store';
+
 
 
 const AdminDashboard = () => {
+  const { isCollapsed } = useSidebarStore();
+
+
   return (
-    <div className="ml-64 p-6 bg-gray-200 min-h-screen flex flex-col">
+    <div className={`p-6 bg-gray-200 min-h-screen flex flex-col transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
 
       <div className="grid grid-cols-4 gap-4 flex-1">
         <div className="bg-white p-10 rounded-lg shadow-lg col-span-1 row-span-2 transition-transform transform hover:scale-105">
@@ -18,7 +23,6 @@ const AdminDashboard = () => {
           <p className="text-black">Resold Products: <span className="font-bold">$1234</span></p>
           <p className="text-black">Swapped Products: <span className="font-bold">$1234</span></p>
         </div>
-
 
         <div className="bg-white p-6 rounded-lg shadow-lg flex items-center gap-4 transition-transform transform hover:scale-105">
           <FiTruck size={50} className="text-[#01BA6A]" />
@@ -65,8 +69,6 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
-
-
 
       <div className="grid grid-cols-3 gap-6 flex-1 mt-6">
         <div className="bg-white p-6 rounded-lg shadow-lg flex items-center justify-center transition-transform transform hover:scale-105 col-span-2">

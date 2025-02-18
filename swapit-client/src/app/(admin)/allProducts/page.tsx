@@ -11,6 +11,8 @@ import Input from "@/components/ui/input";
 import Select from "@/components/ui/selectionBox";
 import { Eye, Edit, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSidebarStore } from '@/store/store';
+
 
 const NewProducts = () => {
   const router = useRouter();
@@ -23,7 +25,7 @@ const NewProducts = () => {
     minPrice: "",
     maxPrice: "",
   });
-
+  
   const { data, isLoading } = useQuery({
     queryKey: ["products", filters],
     queryFn: () => fetchProducts(filters),
@@ -33,9 +35,11 @@ const NewProducts = () => {
     queryKey: ["categories"],
     queryFn: fetchCategories,
   });
+  const { isCollapsed } = useSidebarStore();
 
+  console.log(data)
   return (
-    <div className="p-4 bg-white min-h-screen">
+    <div className={`p-4 bg-white min-h-screen transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Product List</h2>
         <Button onClick={() => router.push("/addProduct")}>Add Product</Button>
@@ -147,7 +151,10 @@ const NewProducts = () => {
                 <td className="border p-2">{product.quantity}</td>
                 <td className="border p-2">{product.category.name}</td>
                 <td className=" p-2 flex justify-around space-x-2">
-                  <button className="text-blue-500 hover:text-blue-700">
+                  <button 
+                    className="text-blue-500 hover:text-blue-700" 
+                    onClick={()=>router.push(`/allProducts/${product._id}`)}
+                  >
                     <Eye size={30} />
                   </button>
                   <button className="text-green-500 hover:text-green-700">

@@ -7,8 +7,10 @@ const Header = () => {
   const pathName = usePathname()
   const router = useRouter();
   const adminRoutes = ["/dashboard", "/users", "/allProducts", "/orders", "/addProduct"];
+  const dynamicRoutes = pathName.includes("/allProducts/");
 
-  if(pathName === "/login" || pathName === "/user-register" || adminRoutes.includes(pathName)){
+
+  if(pathName === "/login" || pathName === "/user-register" || adminRoutes.includes(pathName) || dynamicRoutes){
     return null
   }
     return (

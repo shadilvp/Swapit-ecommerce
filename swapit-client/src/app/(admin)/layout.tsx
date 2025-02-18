@@ -1,22 +1,13 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactNode, useState } from "react";
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { ReactNode} from "react";
+
 import "./globals.css";
 import AdminSidebar from "@/components/Layout/AdminSideBar"
 import NavbarToggleButton from "@/components/Layout/navbarToggleButton";
+import { useSidebarStore } from "@/store/store"; 
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 
 
@@ -25,17 +16,18 @@ export default function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const [queryClient] = useState(() => new QueryClient());
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+
+  const { isCollapsed } = useSidebarStore();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="admin-layout, flex">
-      {isSidebarOpen && <AdminSidebar onClose={() => setIsSidebarOpen(false)} />}
-      <div className="flex-1">
-        <NavbarToggleButton onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)} />
-        <main className="p-6">{children}</main>
-      </div>
+    <QueryClientProvider client={new QueryClient()}>
+      <div className="admin-layout flex">
+        {/* Sidebar, shown based on Zustand state */}
+        {!isCollapsed && <AdminSidebar />}
+        <div className="flex-1">
+          <NavbarToggleButton />
+          <main className="p-6">{children}</main>
+        </div>
       </div>
     </QueryClientProvider>
   );

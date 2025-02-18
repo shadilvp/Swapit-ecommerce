@@ -1,5 +1,5 @@
-import { Product } from "../models/productModel.js";
-import { Category } from "../models/catagoryModel.js";
+import { Product } from "../../models/productModel.js";
+import { Category } from "../../models/catagoryModel.js";
 
 
 export const addNewProduct = async (req, res) => {
@@ -89,7 +89,7 @@ export const addCategories = async (req, res) => {
 
   export const getAllProducts = async(req,res) => {
     try {
-        let {page, limit, search, category, minPrice,subCategory, maxPrice} = req.query ; 
+        let {page, limit, search, category, minPrice,subCategory, maxPrice, condition} = req.query ; 
 
         page = parseInt(page) || 1 ;
         limit = parseInt(limit) || 10;
@@ -100,6 +100,10 @@ export const addCategories = async (req, res) => {
         if(search){
             filter.name = { $regax: search, $options:"i" };
         };
+
+        if(condition){
+            filter.condition = condition
+        }
 
         if(category){
             filter.category = category;
@@ -116,6 +120,8 @@ export const addCategories = async (req, res) => {
         } else if (maxPrice) {
             filter.price = { $lte: parseInt(maxPrice) };
         }
+
+
 
         const products = await Product.find(filter)
         .populate("category", "name")
@@ -142,4 +148,18 @@ export const addCategories = async (req, res) => {
             error: error.message,
         });
     }
+  }
+
+
+  //get specific product ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+  export const getSpecificProduct = async (req, res) => {
+    const {productId} = req.params;
+    const product = await Product.findById(productId)
+    if(!product){
+        res.status(404).json({success:false,message:" product is not found"})
+    }
+
+    return res.status(200).json({success:true, product})
   }

@@ -34,6 +34,10 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        wallet: {
+            type:Number,
+            default:0,
+        },
         isDeleted : {
             type:Boolean,
             default : false

@@ -1,0 +1,137 @@
+"use client"
+
+import { fetchUsers } from "@/services/admin/users";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation"
+import { useState } from "react";
+import { useSidebarStore } from '@/store/store';
+import { Edit, Eye, Trash, User } from "lucide-react";
+import { DropdownMenu } from "@/components/ui/dropDownMenu";
+import Button from "@/components/ui/button";
+import Checkbox from "@/components/ui/checkBox";
+import Input from "@/components/ui/input";
+import Select from "@/components/ui/selectionBox";
+
+
+
+
+const customers = () => {
+    const router = useRouter();
+
+    const [filters, setFilters] = useState({
+        search : "",
+        page : 1,
+        isBlock : false
+    });
+
+    const { data, isLoading } = useQuery({
+        queryKey: ["users", filters],
+        queryFn: () => fetchUsers(filters),
+      });
+
+    const { isCollapsed } = useSidebarStore();
+    console.log("users",data)
+
+    return(
+        <div>
+            return (
+    <div className={`p-4 bg-white min-h-screen transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">Product List</h2>
+        {/* <Button onClick={() => router.push("/addProduct")}>Add Product</Button> */}
+
+        {/* Dropdown Menu */}
+        <DropdownMenu>
+          <div className="p-4 w-64 bg-white rounded shadow-md">
+            <Input
+              placeholder="Search products..."
+              value={filters.search}
+              onChange={(e) =>
+                setFilters({ ...filters, search: e.target.value })
+              }
+            />
+
+            {/* Condition Filter */}
+            <div className="mt-3">
+              <h3 className="font-semibold text-gray-700">Blocked Users</h3>
+              <Checkbox
+                label="blocked users"
+                checked={filters.isBlock === true}
+                onChange={() => setFilters({ ...filters, isBlock: true })}
+              />
+            </div>
+
+            {/* Clear Filters Button */}
+            <Button
+              onClick={() =>
+                setFilters({
+                  search: "",
+                  isBlock: false,
+                  page: 1,
+                })
+              }
+            >
+              Clear Filters
+            </Button>
+          </div>
+        </DropdownMenu>
+      </div>
+
+      {/* user Table */}
+      {isLoading ? (
+        <p>Loading products...</p>
+      ) : (
+        <table className="w-full border-collapse text-black border border-gray-300 mt-4">
+          <thead>
+            <tr className="bg-green-500 text-white text-left">
+              <th className="border p-2 w-12">No</th>
+              <th className="border p-2 w-16">Image</th>
+              <th className="border p-2">Name</th>
+              <th className="border p-2">email</th>
+              <th className="border p-2">wallet</th>
+              <th className="border p-2">createdAt</th>
+              <th className="border p-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data?.users?.map((users: any, index: number) => (
+              <tr key={users.id} className="text-left border">
+                <td className="border p-2">{index + 1}</td>
+                <td className="border p-2">
+                  <img
+                    src={users.image}
+                    alt={users.name}
+                    className="w-10 h-10 object-cover rounded-md"
+                  />
+                </td>
+                <td className="border p-2">  {users?.name ? users.name : <User size={20} className="text-gray-500" />}</td>
+                <td className="border p-2">${users.email}</td>
+                <td className="border p-2">{users.wallet}</td>
+                <td className="border p-2">{users.createdAt}</td>
+                <td className=" p-2 flex justify-around space-x-2">
+                  <button 
+                    className="text-blue-500 hover:text-blue-700" 
+                    onClick={()=>router.push(`/allProducts/${users._id}`)}
+                  >
+                    <Eye size={30} />
+                  </button>
+                  <button className="text-green-500 hover:text-green-700">
+                    <Edit size={30} />
+                  </button>
+                  <button className="text-red-500 hover:text-red-700">
+                    <Trash size={30} />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+        </div>
+    )
+    
+}
+
+export default customers;
