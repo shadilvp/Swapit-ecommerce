@@ -45,14 +45,20 @@ const productSchema = new mongoose.Schema({
         required: true,
     },
     location: {
-        type: String,
-        required: function () {
-            return this.condition === "used";
+        type: {
+            latitude: { type: Number, required: function () { return this.condition === "used"; } },
+            longitude: { type: Number, required: function () { return this.condition === "used"; } },
+            address: { type: String, required: function () { return this.condition === "used"; } },
         },
+        required: function () { return this.condition === "used"; },
+    },
+    seller: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: function () { return this.condition === "used"; },
     }
 });
 
-// Middleware to validate subCategory against the selected Category
 productSchema.pre("save", async function (next) {
     const category = await mongoose.model("Category").findById(this.category);
     if (!category) {

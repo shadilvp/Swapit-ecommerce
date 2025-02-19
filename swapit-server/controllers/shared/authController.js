@@ -3,6 +3,7 @@ import { Admin, validateAdmin } from "../../models/adminModel.js";
 import bcrypt from "bcrypt"
 import dotenv from "dotenv"
 import jwt from "jsonwebtoken"
+import Cookies from 'js-cookie';
 
 dotenv.config()
 
@@ -14,7 +15,7 @@ const generateAccessToken = (user) => {
     return jwt.sign(
         { id: user._id, role: user.role },
         JWT_SECRET,
-        { expiresIn: "15m" }
+        { expiresIn: "7d" }
     );
 };
 
@@ -120,16 +121,18 @@ export const login = async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        secure: isProduction,
-        sameSite: "Strict",
-        maxAge: 15 * 60 * 1000,
+        secure: false,
+        // sameSite: "Lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        // path: "/",
     });
 
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: isProduction,
-        sameSite: "Strict",
+        secure: false,
+        // sameSite: "Lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
+        // path: "/",
     });
 
 
@@ -162,6 +165,46 @@ export const login = async (req, res) => {
     }
 };
 
+//Logout --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+export const logout = async (req, res) => {
+    try {
+        const accessToken = req.cookies.accessToken;
+        const refreshToken = req.cookies.refreshToken;
+    
+        console.log("Access Token:", accessToken);
+        console.log("Refresh Token:", refreshToken);    
+
+        if (!refreshToken) {
+            return res.status(400).json({ success: false, message: "User already logged out" });
+        }
+
+        console.log("successfully loged out")
+
+        let user = await User.findOne({ refreshToken });
+
+        if (!user) {
+            user = await Admin.findOne({ refreshToken });
+        }
+
+        if (user) {
+            user.refreshToken = null;
+            await user.save();
+        }
+
+        res.clearCookie("accessToken", { httpOnly: true, secure: process.env.COOKIE_FLAG === "true", sameSite: "Strict" });
+        res.clearCookie("refreshToken", { httpOnly: true, secure: process.env.COOKIE_FLAG === "true", sameSite: "Strict" });
+        return res.status(200).json({ success: true, message: "Successfully logged out" });
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ success: false, message: "Something went wrong" });
+    }
+};
+
+
+
+
 //refresh Access Token --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 export const refreshAccessToken = async (req, res) => {
@@ -185,8 +228,8 @@ export const refreshAccessToken = async (req, res) => {
         const newAccessToken = generateAccessToken(user);
         res.cookie("accessToken", newAccessToken, {
             httpOnly: true,
-            secure: process.env.COOKIE_FLAG === "true",
-            sameSite: "Strict",
+            secure: false,
+            sameSite: "Lax",
             maxAge: 15 * 60 * 1000,
         });
 

@@ -10,6 +10,7 @@ import { useSidebarStore } from "@/store/store";
 const productDetails = () => {
     const { isCollapsed } = useSidebarStore();
     const {productId} = useParams();
+    
     const {data, isLoading, error } = useQuery({
         queryKey:["product", productId],
         queryFn: ()=> fetchSpecificProduct(productId),

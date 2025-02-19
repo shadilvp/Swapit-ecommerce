@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiHome, FiBox, FiUsers, FiShoppingCart, FiStar, FiLogOut, FiSearch, FiPlus, FiX } from 'react-icons/fi';
 import Image from 'next/image';
+import { logoutUser } from '@/services/auth';
+import { useMutation } from '@tanstack/react-query';
 
 const AdminSidebar = () => {
   const { isCollapsed, toggleSidebar } = useSidebarStore();
@@ -18,6 +20,16 @@ const AdminSidebar = () => {
     { name: 'Orders', icon: <FiShoppingCart />, path: "/orders" },
     { name: 'Reviews', icon: <FiStar />, path: "/reviews" },
   ];
+
+  const { mutate: handleLogout, isPending } = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: () => {
+      router.push("/login");
+    },
+    onError: (error) => {
+      console.error("Logout failed", error);
+    },
+  });
 
   return (
     <div className={`fixed top-0 left-0 h-screen bg-green-500 text-white flex flex-col p-4 shadow-lg transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'}`}>
@@ -64,9 +76,12 @@ const AdminSidebar = () => {
           <Image src="/Screenshot 2025-02-12 140408.png" alt="User Avatar" width={30} height={30} className="rounded-full" />
           {!isCollapsed && <span className="ml-3">Name</span>}
         </div>
-        <div className="flex items-center p-3 rounded-lg cursor-pointer hover:bg-green-600 transition" onClick={() => console.log("Logging out...")}>
+        <div 
+          className="flex items-center p-3 rounded-lg cursor-pointer hover:bg-green-600 transition" 
+          onClick={() => handleLogout()}
+        >
           <FiLogOut />
-          {!isCollapsed && <span className="ml-3">Logout</span>}
+          <span className="ml-3">{isPending ? "Logging out..." : "Logout"}</span>
         </div>
       </div>
     </div>

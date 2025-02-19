@@ -11,3 +11,9 @@ export const login = async (data: { email: string; password: string }) => {
   return response.data;
 };
 
+export const logoutUser = async () => {
+  console.log("hy")
+  const response = await axiosInstance.post("/logout");
+  console.log(response.data)
+};
+

@@ -8,18 +8,18 @@ export const addNewProduct = async (req, res) => {
             return res.status(400).json({ success: false, message: "Product image is required" });
         }
 
-        // console.log("Raw Request Body:", req.body);
+        console.log("Raw Request Body:", req.body);
 
         const categoryId = req.body.category;
         const subCategoryName = req.body.subCategory;
+        const userId = req.user?.id; // Ensure user ID exists
+        console.log("User ID:", userId);
 
         const currentCategory = await Category.findById(categoryId);
 
         if (!currentCategory) {
             return res.status(400).json({ success: false, message: "Invalid category ID" });
         }
-
-        // console.log("Fetched Category:", currentCategory);
 
         if (!currentCategory.subCategories.includes(subCategoryName)) {
             return res.status(400).json({
@@ -28,19 +28,39 @@ export const addNewProduct = async (req, res) => {
             });
         }
 
+        // Determine condition dynamically
+        let condition = "new";
+        let location = null;
+        let seller = null;
+
+        // If location fields are provided, set condition to "used"
+        if (req.body.latitude && req.body.longitude && req.body.address) {
+            condition = "used";
+            location = {
+                latitude: Number(req.body.latitude),
+                longitude: Number(req.body.longitude),
+                address: req.body.address,
+            };
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "User must be logged in to add a used product" });
+            }
+            seller = userId;
+        }
+
         const productData = {
             name: req.body.name,
             description: req.body.description,
-            category: categoryId, // Store as ObjectId
-            subCategory: subCategoryName, // Store as a string
+            category: categoryId,
+            subCategory: subCategoryName,
             quantity: Number(req.body.quantity),
             price: Number(req.body.price),
             image: req.file.path,
-            condition: "new"
+            condition,
+            location,
+            seller,
         };
 
-        // console.log("Parsed Product Data:", productData);
-
+        console.log("Parsed Product Data:", productData);
 
         const newProduct = new Product(productData);
         await newProduct.save();
@@ -51,6 +71,7 @@ export const addNewProduct = async (req, res) => {
         return res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
 };
+
 
 //categories ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -90,7 +111,7 @@ export const addCategories = async (req, res) => {
   export const getAllProducts = async(req,res) => {
     try {
         let {page, limit, search, category, minPrice,subCategory, maxPrice, condition} = req.query ; 
-
+        
         page = parseInt(page) || 1 ;
         limit = parseInt(limit) || 10;
         const skip = (page - 1) * limit;

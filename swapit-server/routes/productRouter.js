@@ -7,7 +7,7 @@ import upload from "../middlewares/multer.js";
 const router = express.Router();
 
 
-router.post('/addNewProduct', upload.single("image"),asyncHandler(addNewProduct));
+router.post('/addNewProduct', verifyAccessToken,upload.single("image"),asyncHandler(addNewProduct));
 router.post("/addCategories", addCategories);
 router.get("/categories", getCategories);
 router.get("/products",getAllProducts)

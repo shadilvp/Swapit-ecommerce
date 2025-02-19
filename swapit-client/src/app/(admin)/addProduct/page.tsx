@@ -19,6 +19,7 @@ const AddProduct = () => {
     quantity: 1,
     price: 0,
     image: null as File | null,
+    condition:"new"
   });
 
   const { data: categories, isLoading, error } = useQuery({

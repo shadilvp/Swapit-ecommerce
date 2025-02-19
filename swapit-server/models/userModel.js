@@ -38,6 +38,22 @@ const userSchema = new mongoose.Schema(
             type:Number,
             default:0,
         },
+        productSold:{
+            type:Number,
+            default:0
+        },
+        totalRevenue:{
+            type:Number,
+            default:0
+        },
+        productSwapped:{
+            type:Number,
+            default:0
+        },
+        points:{
+            type:Number,
+            default:0
+        },
         isDeleted : {
             type:Boolean,
             default : false

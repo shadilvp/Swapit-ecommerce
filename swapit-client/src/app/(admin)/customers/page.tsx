@@ -1,7 +1,7 @@
 "use client"
 
-import { fetchUsers } from "@/services/admin/users";
-import { useQuery } from "@tanstack/react-query";
+import { blockUser, fetchUsers } from "@/services/users";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation"
 import { useState } from "react";
 import { useSidebarStore } from '@/store/store';
@@ -10,13 +10,11 @@ import { DropdownMenu } from "@/components/ui/dropDownMenu";
 import Button from "@/components/ui/button";
 import Checkbox from "@/components/ui/checkBox";
 import Input from "@/components/ui/input";
-import Select from "@/components/ui/selectionBox";
-
-
 
 
 const customers = () => {
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     const [filters, setFilters] = useState({
         search : "",
@@ -30,15 +28,25 @@ const customers = () => {
       });
 
     const { isCollapsed } = useSidebarStore();
-    console.log("users",data)
+
+    const { mutate: toggleBlockUser, isPending: isBlocking } = useMutation({
+      mutationFn: (userId: string) => blockUser(userId),
+      onSuccess: ()=> {
+        queryClient.invalidateQueries({ queryKey: ["users"] });
+      },
+      onError: (error) => {
+        console.error("Error blocking user:", error);
+      }
+    })
+
+
+
 
     return(
         <div>
-            return (
     <div className={`p-4 bg-white min-h-screen transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Product List</h2>
-        {/* <Button onClick={() => router.push("/addProduct")}>Add Product</Button> */}
 
         {/* Dropdown Menu */}
         <DropdownMenu>
@@ -111,12 +119,16 @@ const customers = () => {
                 <td className=" p-2 flex justify-around space-x-2">
                   <button 
                     className="text-blue-500 hover:text-blue-700" 
-                    onClick={()=>router.push(`/allProducts/${users._id}`)}
+                    onClick={()=>router.push(`/customers/${users._id}`)}
                   >
                     <Eye size={30} />
                   </button>
-                  <button className="text-green-500 hover:text-green-700">
-                    <Edit size={30} />
+                  <button
+                    className="text-green-500 hover:text-green-700"
+                    onClick={() => toggleBlockUser(users._id)}
+                    disabled={isBlocking}
+                  >
+                    {isBlocking ? "Processing..." : users?.isBlock ? "Unblock User" : "Block User"}
                   </button>
                   <button className="text-red-500 hover:text-red-700">
                     <Trash size={30} />
@@ -128,8 +140,7 @@ const customers = () => {
         </table>
       )}
     </div>
-  );
-        </div>
+    </div>
     )
     
 }

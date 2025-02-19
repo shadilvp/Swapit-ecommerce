@@ -29,3 +29,35 @@ export const getAllUsers = async (req,res) => {
         users,
     });
 }
+
+
+//block user -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+export const blockUser = async (req, res) => {
+    const {userId} = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) {
+            res.status(404).json({success:false,message:"User is not available"})
+    }
+
+    user.isBlock = !user.isBlock ;
+    await user.save()
+
+    const action = user.isBlock ? "blocked" : "unblocked";
+
+    return res.status(200).json({success:true,message:`User has been successfully ${action}`,user})
+}
+
+
+//specific user -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+export const specificUser = async (req,res) => {
+    const {userId} = req.params;
+    const user = await User.findById(userId)
+    if (!user) {
+            res.status(404).json({success:false,message:"User is not available"})
+    }
+    res.status(200).json({success:true, user})
+    
+}

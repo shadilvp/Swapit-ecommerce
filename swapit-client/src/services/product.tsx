@@ -29,10 +29,13 @@ export const addProduct = async (data:FormData) => {
     minPrice = "",
     maxPrice = "",
     condition = "",
+    latitude= null as number | null,
+    longitude= null as number | null,
+    address= "",
 
   } = {}) => {
     const response = await axiosInstance.get("/products",{
-      params: {page, limit, search, category, subCategory, minPrice, maxPrice, condition},
+      params: {page, limit, search, category, subCategory, minPrice, maxPrice, condition,longitude,latitude,address},
     });
     return response.data
   }
