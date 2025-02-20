@@ -1,5 +1,6 @@
 import { Product } from "../../models/productModel.js";
 import { Category } from "../../models/catagoryModel.js";
+import mongoose from "mongoose";
 
 
 export const addNewProduct = async (req, res) => {
@@ -176,11 +177,28 @@ export const addCategories = async (req, res) => {
 
 
   export const getSpecificProduct = async (req, res) => {
-    const {productId} = req.params;
-    const product = await Product.findById(productId)
-    if(!product){
-        res.status(404).json({success:false,message:" product is not found"})
-    }
+    const { productId } = req.params; // This could be either a product ID or a seller ID
 
-    return res.status(200).json({success:true, product})
-  }
+    try {
+        let product;
+
+        // Check if productId is a valid MongoDB ObjectId (for products)
+        if (mongoose.Types.ObjectId.isValid(productId)) {
+            product = await Product.findById(productId);
+        }
+
+        // If no product is found, assume productId is actually a sellerId
+        if (!product) {
+            product = await Product.find({ seller: productId });
+        }
+
+        // If no results found, return a 404 response
+        if (!product || (Array.isArray(product) && product.length === 0)) {
+            return res.status(404).json({ success: false, message: "Product(s) not found" });
+        }
+
+        return res.status(200).json({ success: true, product });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server error", error: error.message });
+    }
+};

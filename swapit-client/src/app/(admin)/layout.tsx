@@ -6,7 +6,7 @@ import { ReactNode} from "react";
 import "./globals.css";
 import AdminSidebar from "@/components/Layout/AdminSideBar"
 import NavbarToggleButton from "@/components/Layout/navbarToggleButton";
-import { useSidebarStore } from "@/store/store"; 
+import { useGlobalStore } from "@/store/store"; 
 
 
 
@@ -17,7 +17,7 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
 
-  const { isCollapsed } = useSidebarStore();
+  const { isCollapsed } = useGlobalStore();
 
   return (
     <QueryClientProvider client={new QueryClient()}>

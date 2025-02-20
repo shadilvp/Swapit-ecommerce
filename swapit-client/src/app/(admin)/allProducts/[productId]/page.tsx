@@ -3,12 +3,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchSpecificProduct } from "@/services/product";
 import { useParams } from "next/navigation";
-import { useSidebarStore } from "@/store/store";
+import { useGlobalStore } from "@/store/store";
 
 
 
 const productDetails = () => {
-    const { isCollapsed } = useSidebarStore();
+    const { isCollapsed } = useGlobalStore();
     const {productId} = useParams();
     
     const {data, isLoading, error } = useQuery({

@@ -5,10 +5,54 @@ import { Upload, Package, Edit, ShoppingCart, DollarSign, RefreshCw, Star } from
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserProfile } from "@/services/user/profile";
 import { useRouter } from "next/navigation";
+import { fetchSpecificProduct } from "@/services/product";
+import Button from "@/components/ui/button";
+
+
+
+const SpecificUserProductList = ({ userId }: { userId: string }) => {
+    const router = useRouter();
+  const { data: productData, isLoading, error } = useQuery({
+    queryKey: ["product", userId],
+    queryFn: () => fetchSpecificProduct(userId),
+  });
+
+  if (isLoading) return <p>Loading products...</p>;
+  if (error) return <p>Error loading products</p>;
+
+  return (
+    <div>
+      <h1 className="text-xl font-semibold mt-6">Products for Selling</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        {productData?.product?.map((product: any) => (
+          <div key={product._id} className="p-4 border rounded-lg shadow-md">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-40 object-cover rounded-md"
+            />
+            <h2 className="text-lg font-medium mt-2">{product.name}</h2>
+            <p className="text-gray-600">{product.description}</p>
+            {/* Add margin-bottom to create space below price */}
+            <span className="text-green-600 font-bold block mt-2">${product.price}</span>
+            <div className="mt-auto pt-2">
+                <Button onClick={() => router.push(`/swapProduct?id=${product._id}&source=profile`)}>Select</Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+  
+};
+
+
+
 
 const Profile = () => {
-    const router = useRouter();
+  const router = useRouter();
   const [image, setImage] = useState<string | null>(null);
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
@@ -18,12 +62,10 @@ const Profile = () => {
   if (error) return <p>Error loading profile</p>;
 
   const user = data?.user;
-//   console.log("user",user)
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6 text-gray-700">
-
-      {/* Profile Image and Navigation Buttons */}
+    <div className="p-6 max-w-4xl mx-auto space-y-6 text-gray-700 pt-20">
+      {/* Profile Info */}
       <div className="flex items-center justify-between">
         <div className="flex flex-col items-center">
           <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-300 shadow-md">
@@ -45,7 +87,7 @@ const Profile = () => {
           </button>
           <button 
             className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700"
-            onClick={()=>router.push("/sellProduct")}
+            onClick={() => router.push("/sellProduct")}
           >
             <Package size={16} /> <span>Sell Product</span>
           </button>
@@ -55,7 +97,7 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* User Information - Updated Styling */}
+      {/* User Information */}
       <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -103,6 +145,10 @@ const Profile = () => {
           <span className="font-bold text-gray-900">{user?.points}</span>
         </div>
       </div>
+      <br />
+      <br />
+      {/* Product List (only if user._id is available) */}
+      {user?._id && <SpecificUserProductList userId={user._id} />}
     </div>
   );
 };

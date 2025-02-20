@@ -2,10 +2,10 @@
 
 
 import { FiMenu } from "react-icons/fi";
-import { useSidebarStore } from "@/store/store";
+import { useGlobalStore } from "@/store/store";
 
 const NavbarToggleButton = () => {
-  const {toggleSidebar,isCollapsed} = useSidebarStore();
+  const {toggleSidebar,isCollapsed} = useGlobalStore  ();
   // console.log("Sidebar State:", isCollapsed);
   return (
     <nav className=" text-green-600 flex items-center justify-between bg-white shadow p-4">

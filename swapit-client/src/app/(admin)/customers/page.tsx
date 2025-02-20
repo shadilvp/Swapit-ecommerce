@@ -4,7 +4,7 @@ import { blockUser, fetchUsers } from "@/services/users";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation"
 import { useState } from "react";
-import { useSidebarStore } from '@/store/store';
+import { useGlobalStore } from '@/store/store';
 import { Edit, Eye, Trash, User } from "lucide-react";
 import { DropdownMenu } from "@/components/ui/dropDownMenu";
 import Button from "@/components/ui/button";
@@ -27,7 +27,7 @@ const customers = () => {
         queryFn: () => fetchUsers(filters),
       });
 
-    const { isCollapsed } = useSidebarStore();
+    const { isCollapsed } = useGlobalStore();
 
     const { mutate: toggleBlockUser, isPending: isBlocking } = useMutation({
       mutationFn: (userId: string) => blockUser(userId),

@@ -28,7 +28,7 @@ const Shop = () => {
     queryKey: ["products", filters],
     queryFn: () => fetchProducts(filters),
   });
-
+  
   const { data: categories, isLoading: isLoadingCategories, error } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
@@ -38,7 +38,7 @@ const Shop = () => {
     if (product.condition === "new") {
       router.push("/");
     } else {
-      router.push(`/swapProduct?id=${product._id}`);
+      router.push(`/swapProduct?id=${product._id}&source=shop`);
     }
   };
   

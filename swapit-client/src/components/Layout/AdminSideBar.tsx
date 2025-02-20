@@ -1,6 +1,6 @@
 'use client';
 
-import { useSidebarStore } from '@/store/store';
+import { useGlobalStore } from '@/store/store';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiHome, FiBox, FiUsers, FiShoppingCart, FiStar, FiLogOut, FiSearch, FiPlus, FiX } from 'react-icons/fi';
@@ -9,7 +9,7 @@ import { logoutUser } from '@/services/auth';
 import { useMutation } from '@tanstack/react-query';
 
 const AdminSidebar = () => {
-  const { isCollapsed, toggleSidebar } = useSidebarStore();
+  const { isCollapsed, toggleSidebar } = useGlobalStore();
   const [active, setActive] = useState<string>('Dashboard');
   const router = useRouter();
 

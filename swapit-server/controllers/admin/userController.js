@@ -56,7 +56,7 @@ export const specificUser = async (req,res) => {
     const {userId} = req.params;
     const user = await User.findById(userId)
     if (!user) {
-            res.status(404).json({success:false,message:"User is not available"})
+        return  res.status(404).json({success:false,message:"User is not available"})
     }
     res.status(200).json({success:true, user})
     

@@ -2,15 +2,15 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useSidebarStore } from "@/store/store";
+import { useGlobalStore } from "@/store/store";
 import { fetchSpecificUser } from "@/services/users";
 
 
 
 const userDetails = () => {
-    const { isCollapsed } = useSidebarStore();
+    const { isCollapsed } = useGlobalStore();
     const {userId} = useParams();
-    
+
     const {data, isLoading, error } = useQuery({
         queryKey:["user", userId],
         queryFn: ()=> fetchSpecificUser(userId),

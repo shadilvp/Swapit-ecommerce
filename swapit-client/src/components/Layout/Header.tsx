@@ -2,10 +2,13 @@
 import Link from "next/link";
 import { Bell, ShoppingBasket, Search, User } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import NotificationDropdown from "./NotificationDropdown";
 
 const Header = () => {
   const pathName = usePathname();
   const router = useRouter();
+
+
   const adminRoutes = ["/dashboard", "/users", "/allProducts", "/orders", "/addProduct", "/customers"];
   const dynamicRoutes = ["/allProducts/", "/customers"].some(route => pathName.includes(route));
 
@@ -22,6 +25,7 @@ const Header = () => {
       }`}
     >
       <div className="container mx-auto flex justify-between items-center px-6">
+
         {/* Logo */}
         <Link href="/" className="flex items-center">
           {/* <Image src="/LOGO-removebg-preview 3.png" alt="Swapify Logo"/> */}
@@ -44,7 +48,7 @@ const Header = () => {
 
         {/* Icons */}
         <div className="flex items-center space-x-4">
-          <Bell className={`${isHomePage ? "text-white hover:text-gray-300" : "text-black hover:text-gray-600"} cursor-pointer`} size={24} />
+          <NotificationDropdown/>
           <ShoppingBasket className={`${isHomePage ? "text-white hover:text-gray-300" : "text-black hover:text-gray-600"} cursor-pointer`} size={24} />
           <Search className={`${isHomePage ? "text-white hover:text-gray-300" : "text-black hover:text-gray-600"} cursor-pointer rounded-full p-1`} size={28} />
           <User

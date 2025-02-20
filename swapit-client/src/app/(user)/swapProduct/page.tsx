@@ -1,90 +1,138 @@
 "use client";
 import { fetchSpecificProduct } from "@/services/product";
-import { fetchSpecificUser } from "@/services/users";// Import the function to fetch user details
+import { fetchSpecificUser } from "@/services/users";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useGlobalStore } from "@/store/store"; 
+import { useEffect } from "react";
+import { sendNotification } from "@/services/notification";
 
 const ProductSwap = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const productId = searchParams.get("id");
+  const source = searchParams.get("source");
+
+  const { selectedProduct, swappingProduct, setSelectedProduct, setSwappingProduct, resetSwap } = useGlobalStore();
+
+  // console.log("selected",selectedProduct)
+  // console.log("swapped",swappingProduct)
 
   // Fetch Product Details
-  const { data: productData, isLoading: productLoading, error: productError } = useQuery({
+  const { data: productData } = useQuery({
     queryKey: ["product", productId],
     queryFn: () => fetchSpecificProduct(productId),
     enabled: !!productId,
   });
 
   const product = productData?.product;
-  console.log("user Id",product.seller)
 
-  const userId = product.seller
-    const {data, sellerLoading, sellerError } = useQuery({
-        queryKey:["user", userId],
-        queryFn: ()=> fetchSpecificUser(userId),
-        enabled: !!userId,
-    });
+  //  Use useEffect to prevent state updates during rendering
+  useEffect(() => {
+    if (product) {
+      if (source === "shop" && !swappingProduct) {
+        setSwappingProduct(product);
+      }
+      if (source === "profile" && !selectedProduct) {
+        setSelectedProduct(product);
+      }
+    }
+  }, [product, source, setSelectedProduct, setSwappingProduct, swappingProduct, selectedProduct]);
 
-  // console.log("seller",seller)
 
-  if (productLoading) return <p className="text-center text-gray-600">Loading product...</p>;
-  if (productError) return <p className="text-center text-red-600">Error loading product details.</p>;
+  const handleMakeDeal = async () => {
+    if (!selectedProduct || !swappingProduct) return;
+
+    try {
+      const params = {
+        sellerId: swappingProduct.seller,
+        selectedProduct: {
+          _id: selectedProduct._id,
+          name: selectedProduct.name,
+          image: selectedProduct.image,
+          price: selectedProduct.price,
+        },
+        swappingProduct: {
+          _id: swappingProduct._id,
+          name: swappingProduct.name,
+          image: swappingProduct.image,
+          price: swappingProduct.price,
+        },
+      };
+      console.log("datas for notification")
+      await sendNotification(params);
+      alert("Swap request sent successfully!");
+    } catch (error) {
+      alert("Failed to send swap request. Please try again.");
+    }
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       {/* Main Swap Container */}
       <div className="w-full max-w-4xl flex flex-col md:flex-row shadow-lg">
-        {/* Choose Your Product */}
-        <div className="flex-1 bg-green-300 p-6 flex flex-col items-center">
-          <h2 className="text-lg font-semibold text-green-900 mb-2">Choose Your Product</h2>
-          <button className="border border-green-900 px-4 py-1 rounded-md text-green-900">Select</button>
-          <div className="w-full h-64 bg-green-400 mt-4 flex items-center justify-center text-green-900 font-semibold">
-            Product Details
-          </div>
-        </div>
-
-        {/* Swapping Product */}
-        <div className="flex-1 bg-green-500 p-6 flex flex-col items-center text-white">
-          <h2 className="text-lg font-semibold mb-2">Swapping Product</h2>
-          {product ? (
-            <div className="w-full flex flex-col items-center">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-48 h-48 object-cover rounded-lg shadow-md"
-              />
-              <h3 className="mt-2 text-xl font-bold">{product.name}</h3>
-              <p className="text-sm mt-1 italic">{product.condition}</p>
-              <p className="text-lg font-semibold mt-1">₹{product.price}</p>
-              <p className="text-sm mt-1">{product.description}</p>
-              <p className="text-xs mt-1">{product.location.address}</p>
-
-              {/* Seller Details */}
-              {sellerLoading ? (
-                <p className="text-sm mt-2">Loading seller details...</p>
-              ) : sellerError ? (
-                <p className="text-sm text-red-400 mt-2">Failed to load seller info</p>
-              ) : seller ? (
-                <div className="mt-4 text-white text-center">
-                  <h4 className="text-lg font-semibold">Seller Details</h4>
-                  <p className="text-sm">Name: {seller.name}</p>
-                  <p className="text-sm">Mobile: {seller.mobile}</p>
-                  <p className="text-sm">Email: {seller.email}</p>
-                </div>
-              ) : (
-                <p className="text-sm mt-2">No seller information available</p>
-              )}
+        {selectedProduct && swappingProduct ? (
+          <>
+            {/* Left: Selected Product */}
+            <div className="flex-1 bg-green-300 p-6 flex flex-col items-center">
+              <h2 className="text-lg font-semibold text-green-900 mb-2">Selected Product</h2>
+              <img src={selectedProduct.image} alt={selectedProduct.name} className="w-48 h-48 object-cover rounded-lg shadow-md" />
+              <h3 className="mt-2 text-xl font-bold">{selectedProduct.name}</h3>
+              <p className="text-lg font-semibold">₹{selectedProduct.price}</p>
             </div>
-          ) : (
-            <p>No product details available</p>
-          )}
-        </div>
+
+            {/* Right: Swapping Product */}
+            <div className="flex-1 bg-green-500 p-6 flex flex-col items-center text-white">
+              <h2 className="text-lg font-semibold mb-2">Swapping Product</h2>
+              <img src={swappingProduct.image} alt={swappingProduct.name} className="w-48 h-48 object-cover rounded-lg shadow-md" />
+              <h3 className="mt-2 text-xl font-bold">{swappingProduct.name}</h3>
+              <p className="text-lg font-semibold">₹{swappingProduct.price}</p>
+            </div>
+          </>
+        ) : (
+          <p className="text-center text-gray-600">Please select products to swap.</p>
+        )}
       </div>
 
-      {/* Make A Deal Button */}
-      <button className="mt-6 px-6 py-2 bg-green-400 text-white rounded-md shadow-md font-semibold">
-        Make A Deal
-      </button>
+      {/* Buttons */}
+      <div className="flex flex-col gap-3 mt-6">
+        {!swappingProduct && (
+          <button
+            onClick={() => router.push("/shop")}
+            className="px-8 py-3 bg-green-500 text-white rounded-lg shadow-md font-semibold text-lg transition-all duration-200 hover:bg-green-600 hover:scale-105"
+          >
+            Choose from Shop
+          </button>
+        )}
+
+        {!selectedProduct && (
+          <button
+            onClick={() => router.push("/profile")}
+            className="px-8 py-3 bg-green-500 text-white rounded-lg shadow-md font-semibold text-lg transition-all duration-200 hover:bg-green-600 hover:scale-105"
+          >
+            Choose from Profile
+          </button>
+        )}
+
+        {(selectedProduct || swappingProduct) && (
+          <button
+            onClick={resetSwap}
+            className="px-8 py-3 bg-green-500 text-white rounded-lg shadow-md font-semibold text-lg transition-all duration-200 hover:bg-green-600 hover:scale-105"
+          >
+            Reset Selection
+          </button>
+        )}
+
+        {selectedProduct && swappingProduct && (
+          <button
+            className="px-8 py-3 bg-green-500 text-white rounded-lg shadow-md font-semibold text-lg transition-all duration-200 hover:bg-green-600 hover:scale-105"
+            onClick={handleMakeDeal}
+          >
+            Make a Deal
+          </button>
+        )}
+      </div>
+
     </div>
   );
 };

@@ -4,12 +4,12 @@ import { FiTruck, FiUsers, FiBox } from "react-icons/fi";
 import { PiSwap } from "react-icons/pi";
 import { GiGreenhouse } from "react-icons/gi";
 import { GoGraph } from "react-icons/go";
-import { useSidebarStore } from '@/store/store';
+import { useGlobalStore } from '@/store/store';
 
 
 
 const AdminDashboard = () => {
-  const { isCollapsed } = useSidebarStore();
+  const { isCollapsed } = useGlobalStore();
 
 
   return (

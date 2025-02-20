@@ -11,7 +11,7 @@ import Input from "@/components/ui/input";
 import Select from "@/components/ui/selectionBox";
 import { Eye, Edit, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useSidebarStore } from '@/store/store';
+import { useGlobalStore } from '@/store/store';
 
 
 const NewProducts = () => {
@@ -35,7 +35,7 @@ const NewProducts = () => {
     queryKey: ["categories"],
     queryFn: fetchCategories,
   });
-  const { isCollapsed } = useSidebarStore();
+  const { isCollapsed } = useGlobalStore();
 
   console.log(data)
   return (
