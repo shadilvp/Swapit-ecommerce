@@ -112,15 +112,16 @@ export const addCategories = async (req, res) => {
   export const getAllProducts = async(req,res) => {
     try {
         let {page, limit, search, category, minPrice,subCategory, maxPrice, condition} = req.query ; 
+        const currentUserId = req.user.id; 
         
         page = parseInt(page) || 1 ;
         limit = parseInt(limit) || 10;
         const skip = (page - 1) * limit;
 
-        let filter = {}
+        let filter = { seller: { $ne: currentUserId } }; 
 
         if(search){
-            filter.name = { $regax: search, $options:"i" };
+            filter.name = { $regex: search, $options: "i" };
         };
 
         if(condition){

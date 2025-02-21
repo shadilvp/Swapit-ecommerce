@@ -10,7 +10,7 @@ const router = express.Router();
 router.post('/addNewProduct', verifyAccessToken,upload.single("image"),asyncHandler(addNewProduct));
 router.post("/addCategories", addCategories);
 router.get("/categories", getCategories);
-router.get("/products",getAllProducts)
+router.get("/products",verifyAccessToken,getAllProducts)
 router.get("/products/:productId",asyncHandler(getSpecificProduct))
 
 

@@ -26,3 +26,16 @@ export const sendNotification = async (params: NotificationParams) => {
     throw error;
   }
 };
+
+export const getNotification = async () => {
+  const response = await axiosInstance.get('/get-Notification');
+  return response.data
+}
+
+
+
+export const updateNotificationStatus = async (notificationId: string, status: string) => {
+  const response = await axiosInstance.patch(`/notifications/${notificationId}`, { status });
+  return response.data;
+};
+

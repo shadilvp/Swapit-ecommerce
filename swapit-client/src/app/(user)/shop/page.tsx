@@ -207,7 +207,7 @@ const Shop = () => {
 
                   {/* Actions */}
                   <div className="flex justify-between mt-3">
-                    <Button onClick={() => router.push(`/allProducts/${product._id}`)}>View</Button>
+                    <Button onClick={() => router.push(`/shop/${product._id}`)}>View</Button>
                     <Button onClick={() => handleSwapCartButton(product)}>
                         {product.condition === "new" ? "Add to Cart" : "Swap"}
                     </Button>

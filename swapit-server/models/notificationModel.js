@@ -1,33 +1,37 @@
 import mongoose from "mongoose";
 
 const notificationSchema = new mongoose.Schema({
-    userId: {
+    receiver: {
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
         required: true,
     },
-    fromUser: {
+    sender: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+        required: true,
     },
     selectedProduct: { //the product they needed
-        _id: { type: mongoose.Schema.Types.ObjectId, required: true },
-        name: { type: String, required: true },
+        _id: { type: mongoose.Schema.Types.ObjectId},
+        name: { type: String},
         image: { type: String },
         price: { type: Number },
     },
     swappingProduct: { //the product they offering
-        _id: { type: mongoose.Schema.Types.ObjectId, required: true },
-        name: { type: String, required: true },
+        _id: { type: mongoose.Schema.Types.ObjectId},
+        name: { type: String},
         image: { type: String },
         price: { type: Number },
       },
     message: {
         type:String
     },
+    phone: {
+        type:Number
+    },
     status: {
         type: String,
-        enum: ["pending", "approved", "rejected"],
+        enum: ["pending", "approved", "rejected","delete"],
         default: "pending",
     },
     is_read: {

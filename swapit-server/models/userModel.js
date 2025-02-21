@@ -30,6 +30,9 @@ const userSchema = new mongoose.Schema(
         normalImage: {
             type: String
         },
+        phone: {
+            type:Number
+        },
         isBlock: {
             type: Boolean,
             default: false,
