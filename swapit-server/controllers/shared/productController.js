@@ -118,7 +118,7 @@ export const addCategories = async (req, res) => {
         limit = parseInt(limit) || 10;
         const skip = (page - 1) * limit;
 
-        let filter = { seller: { $ne: currentUserId } }; 
+        let filter = { seller: { $ne: new mongoose.Types.ObjectId(currentUserId) } }; 
 
         if(search){
             filter.name = { $regex: search, $options: "i" };

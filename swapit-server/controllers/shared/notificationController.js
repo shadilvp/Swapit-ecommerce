@@ -59,13 +59,11 @@ export const notificationButtons = async (req, res) => {
     const { status } = req.body;
     const senderId = req.user.id
     
-    // Find the notification first
     const notification = await Notification.findById(id);
     if (!notification) {
       return res.status(404).json({ message: "Notification not found" });
     }
 
-    // Fetch the other user (who sent the request)
     const receiver = await User.findById(notification.sender);
     if (!receiver) {
       return res.status(404).json({ message: "User not found" });
@@ -77,7 +75,7 @@ export const notificationButtons = async (req, res) => {
 
       // Send a message to the other user
       await Notification.create({
-        sender: senderId,  // Assuming req.user contains the logged-in user
+        sender: senderId,  
         receiver: receiver._id,
         message: `Your swap request has been rejected by ${req.user.name}.`,
       });

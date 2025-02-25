@@ -56,6 +56,49 @@ export const userRegister = async (req, res) => {
 };
 
 
+
+
+export const googleAuth = async (req, res) => {
+  try {
+    const { name, email, googleId } = req.body;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = new User({ name, email, googleId });
+      await user.save();
+    }
+
+    // Generate Tokens
+    const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "7h" });
+    const refreshToken = jwt.sign({ userId: user._id }, JWT_REFRESH_SECRET, { expiresIn: "7d" });
+
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    // Set Cookies
+    res.cookie("accessToken", accessToken, { httpOnly: true, secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 });
+    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 });
+
+    return res.status(200).json({
+      success: true,
+      message: "Google login successful",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+      accessToken,
+      refreshToken,
+    });
+  } catch (error) {
+    console.error("Google Auth Error:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+
 //Register a admin --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 export const adminRegister = async (req, res) => {
