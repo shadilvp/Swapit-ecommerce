@@ -36,7 +36,6 @@ const NotificationDropdown = () => {
     queryFn: getNotification,
   });
 
-  console.log("notifications",notifications)
 
   // Mutation to update notification status
   const updateStatusMutation = useMutation({

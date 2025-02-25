@@ -20,7 +20,7 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full py-4 transition-all ${
+      className={`fixed top-0 left-0 w-full py-4 transition-all z-50 ${
         isHomePage ? "bg-gradient-to-r from-[#02AE65] to-[#024529]" : "bg-white shadow-md"
       }`}
     >

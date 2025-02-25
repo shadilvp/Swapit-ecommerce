@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts, fetchCategories } from "@/services/product";
 
@@ -9,30 +9,52 @@ import Button from "@/components/ui/button";
 import Checkbox from "@/components/ui/checkBox";
 import Input from "@/components/ui/input";
 import Select from "@/components/ui/selectionBox";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Heart } from "lucide-react";
 
 const Shop = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const categoryFromQuery = searchParams.get("category") || "";
+
   const [filters, setFilters] = useState({
     search: "",
     condition: "",
     category: "",
-    subCategory: "",
+    subCategory: categoryFromQuery,
     page: 1,
     minPrice: "",
     maxPrice: "",
   });
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["products", filters],
-    queryFn: () => fetchProducts(filters),
-  });
+
+
   
   const { data: categories, isLoading: isLoadingCategories, error } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
   });
+
+  useEffect(() => {
+    if (categoryFromQuery && categories) {
+      const foundCategory = categories.find((cat: any) => cat.name === categoryFromQuery);
+      if (foundCategory) {
+        setFilters((prev) => ({
+          ...prev,
+          category: foundCategory._id,
+          subCategory: "",
+        }));
+        console.log(filters)
+      }
+    }
+  }, [categoryFromQuery, categories]);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["products", filters],
+    queryFn: () => fetchProducts(filters),
+  });
+
 
   const handleSwapCartButton = (product: any) => {
     if (product.condition === "new") {
@@ -125,7 +147,7 @@ const Shop = () => {
 
         {/* Main Content */}
         <main className="flex-1">
-          {/* Mobile Filter Dropdown */}
+
           <div className="md:hidden mb-4">
             <DropdownMenu>
               <div className="p-4 bg-white rounded-lg shadow">
@@ -205,7 +227,7 @@ const Shop = () => {
                   <h3 className="mt-2 font-semibold text-gray-800">{product.name}</h3>
                   <p className="text-green-600 font-bold">${product.price}</p>
 
-                  {/* Actions */}
+                  {/* buttons */}
                   <div className="flex justify-between mt-3">
                     <Button onClick={() => router.push(`/shop/${product._id}`)}>View</Button>
                     <Button onClick={() => handleSwapCartButton(product)}>

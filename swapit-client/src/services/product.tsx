@@ -34,6 +34,7 @@ export const addProduct = async (data:FormData) => {
     address= "",
 
   } = {}) => {
+    console.log("datas",page, limit, search, category, subCategory, minPrice, maxPrice, condition,longitude,latitude,address)
     const response = await axiosInstance.get("/products",{
       params: {page, limit, search, category, subCategory, minPrice, maxPrice, condition,longitude,latitude,address},
     });

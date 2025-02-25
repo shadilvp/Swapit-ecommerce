@@ -30,6 +30,8 @@ const NewProducts = () => {
     queryKey: ["products", filters],
     queryFn: () => fetchProducts(filters),
   });
+  console.log("admin Shop - Products:", data);
+
 
   const { data: categories, isLoading: isLoadingCategories, error } = useQuery({
     queryKey: ["categories"],
@@ -37,7 +39,6 @@ const NewProducts = () => {
   });
   const { isCollapsed } = useGlobalStore();
 
-  console.log(data)
   return (
     <div className={`p-4 bg-white min-h-screen transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
       <div className="flex justify-between items-center mb-4">
