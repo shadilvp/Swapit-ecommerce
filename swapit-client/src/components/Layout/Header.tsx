@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Bell, ShoppingBasket, Search, User } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import NotificationDropdown from "./NotificationDropdown";
+import { color } from "framer-motion";
 
 const Header = () => {
   const pathName = usePathname();
