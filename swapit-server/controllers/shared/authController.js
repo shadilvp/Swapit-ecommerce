@@ -60,7 +60,9 @@ export const userRegister = async (req, res) => {
 
 export const googleAuth = async (req, res) => {
   try {
+    console.log("hy")
     const { name, email, googleId } = req.body;
+    console.log("name:",name, "email:",email, "googleId:",googleId)
 
     let user = await User.findOne({ email });
 
@@ -70,27 +72,40 @@ export const googleAuth = async (req, res) => {
     }
 
     // Generate Tokens
-    const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "7h" });
-    const refreshToken = jwt.sign({ userId: user._id }, JWT_REFRESH_SECRET, { expiresIn: "7d" });
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
 
     user.refreshToken = refreshToken;
     await user.save();
 
     // Set Cookies
-    res.cookie("accessToken", accessToken, { httpOnly: true, secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 });
-    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 });
+    res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: false,
+        // sameSite: "Lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        // path: "/",
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        // sameSite: "Lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        // path: "/",
+    });
 
     return res.status(200).json({
       success: true,
       message: "Google login successful",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
-      accessToken,
-      refreshToken,
+      userData: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            },
     });
+
   } catch (error) {
     console.error("Google Auth Error:", error);
     return res.status(500).json({ success: false, message: "Internal server error" });

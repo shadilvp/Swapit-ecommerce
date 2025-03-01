@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { Upload, Package, Edit, ShoppingCart, DollarSign, RefreshCw, Star } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchUserProfile } from "@/services/user/profile";
+import { useEffect, useState } from "react";
+import { Upload, Package, Edit, ShoppingCart, DollarSign, RefreshCw, Star, MessageCircleMore, LogOut } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { editProfile, fetchUserProfile } from "@/services/user/profile";
 import { useRouter } from "next/navigation";
 import { fetchSpecificProduct } from "@/services/product";
 import Button from "@/components/ui/button";
+import { logoutUser } from "@/services/auth";
 
 
 
@@ -51,17 +52,71 @@ const SpecificUserProductList = ({ userId }: { userId: string }) => {
 
 const Profile = () => {
   const router = useRouter();
+  const [isEditing, setIsEditing] = useState(false);
   const [image, setImage] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
   });
+  
+  useEffect(() => {
+    if (data?.user) {
+      setName(data.user.name || "");
+      setEmail(data.user.email || "");
+      setPhone(data.user.phone || "");
+      setImage(data.user.image || null);
+    }
+  }, [data]);
+
+  const mutation = useMutation({
+    mutationFn: editProfile,
+    onSuccess: () => {
+      setIsEditing(false);
+    },
+    onError: (error) => {
+      console.error("Profile update failed:", error);
+    },
+  });
+
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading profile</p>;
 
   const user = data?.user;
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(URL.createObjectURL(file)); // Show preview
+    }
+  };
+
+  // const mutation = useMutation({
+  //   mutationFn: logoutUser,
+  //   onSuccess: () => {
+  //     router.push("/login");
+  //   },
+  //   onError: (error) => {
+  //     console.error("Logout failed:", error);
+  //   },
+  // });
+
+  const handleLogOut = () => {
+    // mutation.mutate();
+    router.push("/login");
+  }
+
+  const handleSaveProfile = () => {
+    mutation.mutate({
+      name,
+      email,
+      phone,
+      image, // This should be handled with an actual upload service like Cloudinary
+    });
+  };
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6 text-gray-700 pt-20">
@@ -70,29 +125,52 @@ const Profile = () => {
         <div className="flex flex-col items-center">
           <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-300 shadow-md">
             {image ? (
-              <img src={user.image} alt="Profile" className="w-full h-full object-cover" />
+              <img src={image} alt="Profile" className="w-full h-full object-cover" />
             ) : (
               <Upload size={32} className="text-gray-500" />
             )}
           </div>
-          {!image && (
-            <button className="mt-2 bg-green-600 text-white hover:bg-green-700 px-4 py-2 rounded-md shadow-sm">
-              Upload Image
-            </button>
+
+          {/* Upload Button in Edit Mode */}
+          {isEditing && (
+            <input type="file" accept="image/*" onChange={handleFileChange} className="mt-2" />
           )}
+
+          {/* Edit / Confirm Button */}
+          <button
+            className="flex items-center space-x-2 mt-2 bg-green-600 text-white hover:bg-green-700 px-4 py-2 rounded-md shadow-sm"
+            onClick={() => {
+              if (isEditing) {
+                handleSaveProfile();
+              } else {
+                setIsEditing(true);
+              }
+            }}
+          >
+            <Edit size={16} /> <span>{isEditing ? "Confirm" : "Edit Profile"}</span>
+          </button>
         </div>
         <div className="flex space-x-4 mt-4">
+        <button 
+          className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700"
+          onClick={() => router.push("/profile/messages")}
+        >
+            <MessageCircleMore size={16} /> <span>Messages</span>
+          </button>
           <button className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700">
             <ShoppingCart size={16} /> <span>Orders</span>
           </button>
           <button 
             className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700"
-            onClick={() => router.push("/sellProduct")}
+            onClick={() => router.push("/profile/sellProduct")}
           >
             <Package size={16} /> <span>Sell Product</span>
           </button>
-          <button className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700">
-            <Edit size={16} /> <span>Edit Profile</span>
+          <button 
+            className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700"
+            onClick={handleLogOut}
+          >
+            <LogOut size={16} /> <span>Log Out</span>
           </button>
         </div>
       </div>
@@ -102,55 +180,53 @@ const Profile = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <p className="text-green-700 font-medium">Name*</p>
-            <div className="bg-green-50 p-3 rounded-3xl text-green-900 rounded-tl-none">{user?.name}</div>
+            {isEditing ? (
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="bg-green-50 p-3 w-full rounded-3xl text-green-900 rounded-tl-none border border-green-300"
+              />
+            ) : (
+              <div className="bg-green-50 p-3 rounded-3xl text-green-900 rounded-tl-none">{name}</div>
+            )}
           </div>
           <div>
             <p className="text-green-700 font-medium">Email*</p>
-            <div className="bg-green-50 p-3 rounded-3xl text-green-900 rounded-tl-none">{user?.email}</div>
+            {isEditing ? (
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-green-50 p-3 w-full rounded-3xl text-green-900 rounded-tl-none border border-green-300"
+              />
+            ) : (
+              <div className="bg-green-50 p-3 rounded-3xl text-green-900 rounded-tl-none">{email}</div>
+            )}
           </div>
         </div>
         <div>
           <p className="text-green-700 font-medium">Phone*</p>
-          <div className="bg-green-50 p-3 rounded-3xl text-green-900 rounded-tl-none">{user?.phone || "No phone number"}</div>
-        </div>
-        <div>
-          <p className="text-green-700 font-medium">Addresses*</p>
-          <div className="bg-green-50 p-3 rounded-3xl text-green-900 rounded-tl-none">
-            <p>Address 1</p>
-            <p>Address 2</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Section */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 border border-gray-300 rounded-2xl flex flex-col items-center bg-gray-100 shadow-md">
-          <Package size={24} className="text-green-600" />
-          <p className="font-medium">Products Sold</p>
-          <span className="font-bold text-gray-900">{user?.productSold}</span>
-        </div>
-        <div className="p-4 border border-gray-300 rounded-2xl flex flex-col items-center bg-gray-100 shadow-md">
-          <DollarSign size={24} className="text-green-600" />
-          <p className="font-medium">Total Revenue</p>
-          <span className="font-bold text-gray-900">{user?.totalRevenue}</span>
-        </div>
-        <div className="p-4 border border-gray-300 rounded-2xl flex flex-col items-center bg-gray-100 shadow-md">
-          <RefreshCw size={24} className="text-green-600" />
-          <p className="font-medium">Products Swapped</p>
-          <span className="font-bold text-gray-900">{user?.productSwapped}</span>
-        </div>
-        <div className="p-4 border border-gray-300 rounded-2xl flex flex-col items-center bg-gray-100 shadow-md">
-          <Star size={24} className="text-green-600" />
-          <p className="font-medium">Points</p>
-          <span className="font-bold text-gray-900">{user?.points}</span>
+          {isEditing ? (
+            <input
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="bg-green-50 p-3 w-full rounded-3xl text-green-900 rounded-tl-none border border-green-300"
+            />
+          ) : (
+            <div className="bg-green-50 p-3 rounded-3xl text-green-900 rounded-tl-none">{phone || "No phone number"}</div>
+          )}
         </div>
       </div>
       <br />
-      <br />
-      {/* Product List (only if user._id is available) */}
-      {user?._id && <SpecificUserProductList userId={user._id} />}
+<br />
+{/* Product List (only if user._id is available) */}
+{user?._id && <SpecificUserProductList userId={user._id} />}
     </div>
   );
 };
 
 export default Profile;
+
+

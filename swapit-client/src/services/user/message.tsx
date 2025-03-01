@@ -9,7 +9,12 @@ export const fetchMessages = async (sellerId:String) => {
     }
 };
 
-export const sendMessageApi = async (sellerId: string, message: string) => {
-    const response = await axiosInstance.post("/send", { receiver: sellerId, message });
+export const sendMessageApi = async (sellerId: string, message: string , productId: string) => {
+    const response = await axiosInstance.post("/send", { receiver: sellerId, message,productId });
     return response.data;
 };
+
+export const fetchAllMessages = async () => {
+    const response = await axiosInstance.get("/messages");
+    return response.data;
+  };

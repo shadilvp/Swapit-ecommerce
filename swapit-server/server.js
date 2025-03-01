@@ -29,9 +29,10 @@ app.use(errorHandler)
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "http://localhost:3001",
+  origin: "http://localhost:3000",
   allowedHeaders: "Content-Type,Authorization",
   credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 }));
 
 app.use('/api', authRouter) 
@@ -44,7 +45,7 @@ app.use('/api', messageRouter);
 
 
 const io = new Server(server, {
-  cors: { origin: "http://localhost:3001", credentials: true },
+  cors: { origin: "http://localhost:3000", credentials: true },
 });
 
 io.on("connection", (socket) => {

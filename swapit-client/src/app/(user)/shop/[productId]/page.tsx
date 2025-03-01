@@ -31,10 +31,9 @@ const ProductDetails = () => {
 
   if (isLoading) return <h1 className="text-center text-lg font-bold">Loading Product ...</h1>;
   if (error) return <p className="text-center text-red-500">Error fetching product</p>;
-
   const handleChat = () => {
-    if (sellerId) {
-      router.push(`/chat/${sellerId}`);
+    if (sellerId && productId) {
+      router.push(`/chat/${sellerId}?productId=${productId}`);
     }
   };
 

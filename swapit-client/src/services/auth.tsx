@@ -7,8 +7,8 @@ export const registerUser = async (data: { name: string; email: string; password
 
 export const googleAuth = async (googleData:{ name: string; email: string; googleId: string }) => {
   console.log("googleData",googleData)
-  const { data } = await axiosInstance.post("/google-auth", googleData);
-  return data;
+  const response = await axiosInstance.post("/google-auth", googleData);
+  return response.data;
 };
 
 

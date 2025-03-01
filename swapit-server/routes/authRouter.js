@@ -8,7 +8,7 @@ router.post('/register-user', asyncHandler(userRegister));
 router.post('/google-auth', asyncHandler(googleAuth));
 router.post('/register-admin', asyncHandler(adminRegister));
 router.post('/login', asyncHandler(login))
-router.post("/logout", logout)
+router.post("/logout", asyncHandler(logout))
 router.post('/refresh-token', refreshAccessToken)
 
 

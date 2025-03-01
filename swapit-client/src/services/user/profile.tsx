@@ -11,3 +11,13 @@ export const fetchUserProfile = async () => {
         return null;
     }
 };
+
+
+export const editProfile = async (data: { name: string; email: string; phone: string; image: string | null }) => {
+    try {
+        const response = await axiosInstance.post("/profile",data)
+        return response.data
+    } catch (error) {
+        return error
+    }
+}

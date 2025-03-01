@@ -43,9 +43,15 @@ const loginPage = () => {
     },
   });
 
+  interface GoogleJwtPayload {
+    name: string;
+    email: string;
+    sub: string;
+  }
+
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
-    const decoded = jwtDecode(credentialResponse.credential); // Decode Google Token
+    const decoded = jwtDecode<GoogleJwtPayload>(credentialResponse.credential);
     console.log("Decoded Google User:", decoded);
 
     const googleUser = {
