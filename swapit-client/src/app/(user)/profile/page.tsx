@@ -53,7 +53,7 @@ const SpecificUserProductList = ({ userId }: { userId: string }) => {
 const Profile = () => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
-  const [image, setImage] = useState<string | null>(null);
+  const [profileImage, setImage] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -68,7 +68,7 @@ const Profile = () => {
       setName(data.user.name || "");
       setEmail(data.user.email || "");
       setPhone(data.user.phone || "");
-      setImage(data.user.image || null);
+      setImage(data.user.profileImage || null);
     }
   }, [data]);
 
@@ -114,7 +114,7 @@ const Profile = () => {
       name,
       email,
       phone,
-      image, // This should be handled with an actual upload service like Cloudinary
+      profileImage, // This should be handled with an actual upload service like Cloudinary
     });
   };
 
@@ -124,8 +124,8 @@ const Profile = () => {
       <div className="flex items-center justify-between">
         <div className="flex flex-col items-center">
           <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-300 shadow-md">
-            {image ? (
-              <img src={image} alt="Profile" className="w-full h-full object-cover" />
+            {profileImage ? (
+              <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
             ) : (
               <Upload size={32} className="text-gray-500" />
             )}

@@ -13,7 +13,7 @@ export const fetchUserProfile = async () => {
 };
 
 
-export const editProfile = async (data: { name: string; email: string; phone: string; image: string | null }) => {
+export const editProfile = async (data: { name: string; email: string; phone: string; profileImage: string | null }) => {
     try {
         const response = await axiosInstance.post("/profile",data)
         return response.data

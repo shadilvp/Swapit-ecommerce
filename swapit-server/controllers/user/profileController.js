@@ -2,12 +2,10 @@ import { User } from "../../models/userModel.js";
 
 
 export const userProfile = async (req,res) => {
-    console.log("hy")
     const userId = req.user.id;
     if (!userId) {
         return res.status(401).json({ success: false, message: "Unauthorized: No user ID found" });
     }
-    console.log("user",userId)
 
     const user = await User.findOne({_id:userId, isBlock:false}).select("-password");
     if(!user){
@@ -27,6 +25,7 @@ export const userProfile = async (req,res) => {
 export const editProfile = async (req, res) => {
     const userId = req.user.id;
     const {name,email,profileImage,phone} = req.body
+    console.log("image",profileImage)
     if (!userId) {
         return res.status(401).json({ success: false, message: "Unauthorized: No user ID found" });
     }
