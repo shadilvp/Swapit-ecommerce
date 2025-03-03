@@ -13,6 +13,15 @@ interface GlobalState {
   setSelectedProduct: (product: any) => void;
   setSwappingProduct: (product: any) => void;
   resetSwap: () => void;
+
+  // Selection Box State
+  showSelectionBox: boolean;
+  toggleSelectionBox: () => void;
+  closeSelectionBox: () => void;
+
+  //selectionBox values state
+  transactionType: string;
+  setTransactionType: (type: string) => void;
 }
 
 export const useGlobalStore = create<GlobalState>((set) => ({
@@ -26,4 +35,13 @@ export const useGlobalStore = create<GlobalState>((set) => ({
   setSelectedProduct: (product) => set({ selectedProduct: product }),
   setSwappingProduct: (product) => set({ swappingProduct: product }),
   resetSwap: () => set({ selectedProduct: null, swappingProduct: null }),
+
+  // Selection Box State
+  showSelectionBox: false,
+  toggleSelectionBox: () => set((state) => ({ showSelectionBox: !state.showSelectionBox })),
+  closeSelectionBox: () => set({ showSelectionBox: false }),
+
+  //selectionBox values state
+  transactionType: "available",
+  setTransactionType: (type) => set({ transactionType: type }),
 }));

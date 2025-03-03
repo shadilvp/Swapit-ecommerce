@@ -6,6 +6,7 @@ const messageSchema = new mongoose.Schema(
     receiver: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     message: { type: String, required: true },
     product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+    selectionBox:{type:Boolean,default:false},
     timestamp: { type: Date, default: Date.now },
     }
 );

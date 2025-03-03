@@ -9,8 +9,9 @@ export const fetchMessages = async (sellerId:String) => {
     }
 };
 
-export const sendMessageApi = async (sellerId: string, message: string , productId: string) => {
-    const response = await axiosInstance.post("/send", { receiver: sellerId, message,productId });
+export const sendMessageApi = async (sellerId: string, message: string , productId: string,  transactionType: string, selectionBox: boolean) => {
+    console.log( sellerId, message,productId,transactionType,selectionBox )
+    const response = await axiosInstance.post("/send", { receiver: sellerId, message,productId,transactionType,selectionBox });
     return response.data;
 };
 

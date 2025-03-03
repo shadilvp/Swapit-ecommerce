@@ -1,15 +1,15 @@
 import axiosInstance from "@/utils/axiosInstence"
 
 
-export const addProduct = async (data:FormData) => {
-  // console.log("data from from",data)
-    const response = await axiosInstance.post("/addNewProduct", data, {
-      headers : {
-        "Content-Type": "multipart/form-data"
-      }
-    });
-    return response.data;
-  };
+  export const addProduct = async (data:FormData) => {
+    // console.log("data from from",data)
+      const response = await axiosInstance.post("/addNewProduct", data, {
+        headers : {
+          "Content-Type": "multipart/form-data"
+        }
+      });
+      return response.data;
+    };
 
 
 

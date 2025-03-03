@@ -39,6 +39,11 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    status:{
+        type:String,
+        enum:["available","sold","swap"],
+        default:"available",
+    },
     condition: {
         type: String,
         enum: ["new", "used"],

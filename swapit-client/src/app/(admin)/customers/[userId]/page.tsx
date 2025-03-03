@@ -1,34 +1,66 @@
-"use client"
+"use client";
 
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useGlobalStore } from "@/store/store";
 import { fetchSpecificUser } from "@/services/users";
 
+const UserDetails = () => {
+  const { isCollapsed } = useGlobalStore();
+  const { userId } = useParams();
 
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => fetchSpecificUser(userId),
+    enabled: !!userId,
+  });
 
-const userDetails = () => {
-    const { isCollapsed } = useGlobalStore();
-    const {userId} = useParams();
+  if (isLoading) return <h1 className="text-center text-xl text-green-600">Loading user...</h1>;
+  if (error) return <p className="text-center text-red-500">Error fetching user.</p>;
 
-    const {data, isLoading, error } = useQuery({
-        queryKey:["user", userId],
-        queryFn: ()=> fetchSpecificUser(userId),
-        enabled: !!userId,
-    });
-    // console.log("product", data)
-    
-    if(isLoading) return <h1>Loading user ...</h1>
-    if(error) return  <p>error fetching user</p>
-    return(
-        <div className={`p-4 bg-white text-green-500 min-h-screen transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
-        <h1>user Details</h1>
-        <p><strong>ID:</strong> {data.user._id}</p>
-        <p><strong>Name:</strong> {data.user.name}</p>
-        <p><strong>Email:</strong> {data.user.email}</p>
-        <p><strong>Wallet:</strong> {data.user.wallet}</p>
+  const user = data?.user;
+
+  return (
+    <div className={`p-6 bg-gray-50 min-h-screen transition-all duration-300 ${isCollapsed ? "ml-16" : "ml-64"} text-black`}>
+      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
+        <h1 className="text-2xl font-bold text-green-700 border-b pb-3 mb-4">User Details</h1>
+
+        <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
+          {/* Profile Image */}
+          <div className="flex-shrink-0">
+            <img
+              src={user?.profileImage || "/placeholder-user.jpg"}
+              alt={user?.name}
+              className="w-40 h-40 rounded-full shadow-md border border-green-300 object-cover"
+            />
+          </div>
+
+          {/* User Info */}
+          <div className="space-y-3 w-full">
+            <p className="text-lg">
+              <strong className="text-green-700">User ID:</strong> {user?._id}
+            </p>
+            <p className="text-lg">
+              <strong className="text-green-700">Name:</strong> {user?.name}
+            </p>
+            <p className="text-lg">
+              <strong className="text-green-700">Email:</strong> {user?.email}
+            </p>
+            <p className="text-lg">
+              <strong className="text-green-700">Wallet Balance:</strong> ${user?.wallet.toFixed(2)}
+            </p>
+
+            {/* Call to Action Buttons */}
+            <div className="flex space-x-4 mt-4">
+              <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md shadow-md">
+                products
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    )
-}
+    </div>
+  );
+};
 
-export default userDetails
+export default UserDetails;

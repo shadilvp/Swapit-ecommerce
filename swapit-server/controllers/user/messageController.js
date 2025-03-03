@@ -3,16 +3,17 @@ import { Message } from "../../models/messageModel.js";
 // Send a new message
 export const sendMessage = async (req, res) => {
     
-    const { receiver, message,productId } = req.body;
+    const { receiver, message,productId,transactionType,selectionBox } = req.body;
     const sender = req.user.id; // Get from access token
-    // console.log("baceknd send",receiver, message, productId)
+    console.log("baceknd send",receiver, message, productId, transactionType, selectionBox)
+    console.log(sender)
   
-    if (!receiver || !message || !productId) {
+    if (!receiver || !message || !productId || !transactionType ) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
   
     try {
-      const newMessage = new Message({ sender, receiver, message,product : productId });
+      const newMessage = new Message({ sender, receiver, message,product : productId, selectionBox, transactionType });
       await newMessage.save();
       console.log(newMessage)
       res.status(201).json({ success: true, message: "Message sent", data: newMessage });
@@ -43,6 +44,8 @@ export const getMessages = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+
 
 export const getAllMessages = async (req, res) => {
   try {

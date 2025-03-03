@@ -6,8 +6,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import io from "socket.io-client";
 import { fetchMessages, sendMessageApi } from "@/services/user/message";
 import { fetchUserProfile } from "@/services/user/profile";
+import { useGlobalStore } from "@/store/store";
+import SelectionBox from "../selectionBoox";
+
+
 
 const ChatPage = () => {
+  const { showSelectionBox, toggleSelectionBox,transactionType } = useGlobalStore(); 
   const { sellerId } = useParams();
   const searchParams = useSearchParams();
   const productId = searchParams.get("productId");
@@ -48,8 +53,8 @@ const ChatPage = () => {
 
   // Send message mutation
   const sendMessageMutation = useMutation({
-    mutationFn: ({ sellerId, message, productId }: { sellerId: string; message: string; productId: string }) =>
-      sendMessageApi(sellerId, message, productId),
+    mutationFn: ({ sellerId, message, productId, transactionType, selectionBox }: { sellerId: string; message: string; productId: string; transactionType: string, selectionBox: boolean; }) =>
+      sendMessageApi(sellerId, message, productId, transactionType, selectionBox),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["messages", sellerId] });
     },
@@ -58,7 +63,12 @@ const ChatPage = () => {
   // Send message handler
   const sendMessage = () => {
     if (message.trim() === "" || !productId) return;
-    sendMessageMutation.mutate({ sellerId: sellerId as string, message, productId });
+    sendMessageMutation.mutate({ 
+      sellerId: sellerId as string,
+      message, productId, 
+      transactionType, 
+      selectionBox :showSelectionBox, 
+    });
     setMessage("");
   };
 
@@ -80,6 +90,7 @@ const ChatPage = () => {
           <p>Loading messages...</p>
         ) : (
           <div className="h-96 overflow-y-auto p-2 flex flex-col space-y-2">
+            
             {messages
               .filter((msg: any) => msg.product === productId)
               .map((msg: any, index: number) => {
@@ -97,20 +108,27 @@ const ChatPage = () => {
                   </div>
                 );
               })}
+              {showSelectionBox && <SelectionBox />}
           </div>
         )}
 
         {/* Message Input */}
         <div className="mt-4 flex items-center border rounded-lg overflow-hidden">
+          <button
+            className="bg-slate-300 text-black py-5 px-3"
+            onClick={toggleSelectionBox}
+          >
+            ?
+          </button>
           <input
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="flex-1 p-3 border-none outline-none"
+            className="flex-1 p-3 border-none outline-none text-black"
             placeholder="Type a message..."
           />
           <button
-            className="bg-green-600 text-white px-4 py-2"
+            className="bg-green-600 text-white px-4 py-5"
             onClick={sendMessage}
             disabled={sendMessageMutation.isPending}
           >

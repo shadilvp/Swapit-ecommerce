@@ -107,7 +107,7 @@ const customers = () => {
                 <td className="border p-2">{index + 1}</td>
                 <td className="border p-2">
                   <img
-                    src={users.image}
+                    src={users.profileImage}
                     alt={users.name}
                     className="w-10 h-10 object-cover rounded-md"
                   />

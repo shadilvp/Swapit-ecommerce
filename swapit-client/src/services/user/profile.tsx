@@ -13,9 +13,14 @@ export const fetchUserProfile = async () => {
 };
 
 
-export const editProfile = async (data: { name: string; email: string; phone: string; profileImage: string | null }) => {
+export const editProfile = async (formDataToSend:any) => {
     try {
-        const response = await axiosInstance.post("/profile",data)
+        console.log("data:",formDataToSend)
+        const response = await axiosInstance.post("/profile",formDataToSend,{
+            headers : {
+                "Content-Type": "multipart/form-data"
+              }
+        })
         return response.data
     } catch (error) {
         return error
