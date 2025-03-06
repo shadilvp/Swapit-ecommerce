@@ -58,6 +58,8 @@ export const notificationButtons = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
     const senderId = req.user.id
+    // console.log("status:",status,"id:",id,"senderId:",senderId)
+    
     
     const notification = await Notification.findById(id);
     if (!notification) {
@@ -70,6 +72,7 @@ export const notificationButtons = async (req, res) => {
     }
 
     if (status === "rejected") {
+      const sender = await User.findById(senderId);
       // Remove the notification
       await Notification.findByIdAndDelete(id);
 
@@ -77,7 +80,7 @@ export const notificationButtons = async (req, res) => {
       await Notification.create({
         sender: senderId,  
         receiver: receiver._id,
-        message: `Your swap request has been rejected by ${req.user.name}.`,
+        message: `Your swap request has been rejected by ${sender.name}.`,
       });
 
       return res.json({ message: "Notification rejected and deleted successfully" });
@@ -89,17 +92,18 @@ export const notificationButtons = async (req, res) => {
     }
 
     if (status === "approved") {
+      const sender = await User.findById(senderId);
       // Update the notification status
-      const updatedNotification = await Notification.findByIdAndUpdate(id, { status }, { new: true });
 
       // Send a message to the other user with the phone number
       await Notification.create({
         sender: senderId,
         receiver: receiver._id,
-        message: `Your swap request has been approved by ${req.user.name}. You can contact them at ${req.user.phone}.`,
+        message: `Your swap request has been approved by ${sender.name}. You can contact them at .`,
       });
+      await Notification.findByIdAndDelete(id);
 
-      return res.json(updatedNotification);
+      return res.json("message:succefull");
     }
 
     res.status(400).json({ message: "Invalid status" });

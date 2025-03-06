@@ -7,13 +7,15 @@ export const sendMessage = async (req, res) => {
     const sender = req.user.id; // Get from access token
     console.log("baceknd send",receiver, message, productId, transactionType, selectionBox)
     console.log(sender)
-  
-    if (!receiver || !message || !productId || !transactionType ) {
+
+    const finalMessage = message?.trim() ? message : "selectionBox";
+
+    if (!receiver || !finalMessage || !productId || !transactionType ) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
   
     try {
-      const newMessage = new Message({ sender, receiver, message,product : productId, selectionBox, transactionType });
+      const newMessage = new Message({ sender, receiver, message:finalMessage, product : productId, selectionBox, transactionType });
       await newMessage.save();
       console.log(newMessage)
       res.status(201).json({ success: true, message: "Message sent", data: newMessage });
@@ -49,7 +51,7 @@ export const getMessages = async (req, res) => {
 
 export const getAllMessages = async (req, res) => {
   try {
-    const messages = await Message.find().populate("sender", "name").populate("receiver", "name");
+    const messages = await Message.find().populate("sender", "name").populate("receiver", "name").populate("product", "name");
     res.status(200).json(messages);
   } catch (error) {
     res.status(500).json({ message: "Error fetching messages", error });
