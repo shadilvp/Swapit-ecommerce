@@ -82,6 +82,15 @@ const Profile = () => {
     mutation.mutate(formDataToSend);
   };
 
+  const handleMessages = () => {
+    router.push("/profile/messages")
+  }
+
+  const handleSelProduct = () => {
+    console.log("hy")
+    router.push("/profile/sellProduct")
+  }
+
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6 text-gray-700 pt-20">
       <div className="flex items-center justify-between">
@@ -114,13 +123,21 @@ const Profile = () => {
         </div>
 
         <div className="flex space-x-4 mt-4">
-          <button className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700">
+          <button 
+            className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700"
+            onClick={handleMessages}
+            >
             <MessageCircleMore size={16} /> <span>Messages</span>
           </button>
-          <button className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700">
+          <button 
+            className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700"
+            >
             <ShoppingCart size={16} /> <span>Orders</span>
           </button>
-          <button className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700">
+          <button 
+            className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700"
+            onClick={handleSelProduct}
+            >
             <Package size={16} /> <span>Sell Product</span>
           </button>
           <button
@@ -142,10 +159,10 @@ const Profile = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="bg-green-50 p-3 w-full rounded-3xl text-green-900 border border-green-300"
+                className="bg-green-100 p-3 w-full rounded-3xl text-green-900 border border-green-300"
               />
             ) : (
-              <div className="bg-green-50 p-3 rounded-3xl text-green-900">{formData.name}</div>
+              <div className="bg-green-100 p-3 rounded-3xl text-green-900 rounded-tl-none  ">{formData.name}</div>
             )}
           </div>
           <div>
@@ -159,7 +176,7 @@ const Profile = () => {
                 className="bg-green-50 p-3 w-full rounded-3xl text-green-900 border border-green-300"
               />
             ) : (
-              <div className="bg-green-50 p-3 rounded-3xl text-green-900">{formData.email}</div>
+              <div className="bg-green-100 p-3 rounded-3xl text-green-900 rounded-tl-none">{formData.email}</div>
             )}
           </div>
         </div>
@@ -174,7 +191,7 @@ const Profile = () => {
               className="bg-green-50 p-3 w-full rounded-3xl text-green-900 border border-green-300"
             />
           ) : (
-            <div className="bg-green-50 p-3 rounded-3xl text-green-900">{formData.phone || "No phone number"}</div>
+            <div className="bg-green-100 p-3 rounded-3xl text-green-900 rounded-tl-none">{formData.phone || "No phone number"}</div>
           )}
         </div>
       </div>

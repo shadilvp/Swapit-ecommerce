@@ -29,11 +29,12 @@ const ProductDetails = () => {
     enabled: !!sellerId,
   });
 
+  const num = 1
   if (isLoading) return <h1 className="text-center text-lg font-bold">Loading Product ...</h1>;
   if (error) return <p className="text-center text-red-500">Error fetching product</p>;
   const handleChat = () => {
     if (sellerId && productId) {
-      router.push(`/chat/${sellerId}?productId=${productId}`);
+      router.push(`/chat/${sellerId}?productId=${productId}&from=${num}`);
     }
   };
 
@@ -73,7 +74,7 @@ const ProductDetails = () => {
               <p className="text-gray-700">{sellerData?.user?.name || "Unknown Seller"}</p>
             )}
             <button 
-              className="mt-2 w-full bg-blue-500 text-white py-2 rounded"
+              className="mt-2 w-full bg-green-700 text-white py-2 rounded"
               onClick={handleChat}
             >
               Chat with Seller

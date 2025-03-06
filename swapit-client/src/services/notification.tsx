@@ -35,6 +35,7 @@ export const getNotification = async () => {
 
 
 export const updateNotificationStatus = async (notificationId: string, status: string) => {
+  console.log(status)
   const response = await axiosInstance.patch(`/notifications/${notificationId}`, { status });
   return response.data;
 };

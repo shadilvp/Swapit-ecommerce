@@ -16,11 +16,11 @@ const ChatPage = () => {
   const { sellerId } = useParams();
   const searchParams = useSearchParams();
   const productId = searchParams.get("productId");
+  const from = searchParams.get("from");
 
   const [message, setMessage] = useState("");
   const queryClient = useQueryClient();
   const [socket, setSocket] = useState<any>(null);
-
   // Fetch logged-in user profile
   const { data, isLoading: currentUserLoading } = useQuery({
     queryKey: ["userProfile"],
@@ -61,16 +61,7 @@ const ChatPage = () => {
   });
 
   // Send message handler
-  const sendMessage = () => {
-    if (message.trim() === "" || !productId) return;
-    sendMessageMutation.mutate({ 
-      sellerId: sellerId as string,
-      message, productId, 
-      transactionType, 
-      selectionBox :showSelectionBox, 
-    });
-    setMessage("");
-  };
+
 
   // Function to format timestamps
   const formatTimestamp = (timestamp: string) => {
@@ -81,11 +72,42 @@ const ChatPage = () => {
     }).format(new Date(timestamp));
   };
 
+  const handleSelectionBox = () => {
+    toggleSelectionBox();
+  };
+  
+  useEffect(() => {
+    if (showSelectionBox) {
+      sendMessage("selection box", true);
+    }
+  }, [showSelectionBox]);
+
+  const sendMessage = (msg = message, withSelectionBox = false) => {
+    if ((!withSelectionBox && msg.trim() === "") || !productId) {
+      return;
+    }
+
+  
+    sendMessageMutation.mutate({
+      sellerId: sellerId as string,
+      message,
+      productId,
+      transactionType,
+      selectionBox: withSelectionBox,
+    });
+  
+    setMessage("");
+  };
+  // console.log(messages)
+  const isSelectionBoxActive = messages.some((msg: any) => msg.selectionBox === true && msg.product === productId);
+
+  console.log(isSelectionBoxActive)
   return (
     <div className="min-h-screen bg-green-100 flex flex-col items-center py-6 pt-24">
       <div className="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold text-green-700 mb-4">Chat with Seller</h2>
-
+      <h2 className="text-xl font-bold text-green-700 mb-4">
+        {Number(from) === 1 ? "Chat with Seller" : "Chat with Customer"}
+      </h2>
         {isLoading || currentUserLoading ? (
           <p>Loading messages...</p>
         ) : (
@@ -94,32 +116,38 @@ const ChatPage = () => {
             {messages
               .filter((msg: any) => msg.product === productId)
               .map((msg: any, index: number) => {
-                const isSender = msg.sender === currentUser; // Check if the logged-in user is the sender
+                const isSender = msg.sender === currentUser;
 
-                return (
-                  <div key={index} className={`flex ${isSender ? "justify-end" : "justify-start"} my-1`}>
-                    <div
-                      className={`px-4 py-2 rounded-3xl text-white max-w-xs md:max-w-md lg:max-w-lg 
-                      ${isSender ? "bg-green-500 rounded-br-none" : "bg-green-700 rounded-bl-none"} shadow-md`}
-                    >
-                      <p>{msg.message}</p>
-                      <p className="text-xs text-gray-300 mt-1 text-right">{formatTimestamp(msg.timestamp)}</p>
-                    </div>
-                  </div>
-                );
-              })}
-              {showSelectionBox && <SelectionBox />}
+              return msg.message === "selectionBox" ? null : (
+                <div key={index} className={`flex ${isSender ? "justify-end" : "justify-start"} my-1`}>
+                <div
+                  className={`px-4 py-2 rounded-3xl text-white max-w-xs md:max-w-md lg:max-w-lg 
+                  ${isSender ? "bg-green-500 rounded-br-none" : "bg-green-700 rounded-bl-none"} shadow-md`}
+                >
+                  <p>{msg.message}</p>
+                  <p className="text-xs text-gray-300 mt-1 text-right">{formatTimestamp(msg.timestamp)}</p>
+                </div>
+                </div>
+              );
+            })}
+
+            {(Number(from) === 2 && showSelectionBox) || (Number(from) === 1 && isSelectionBoxActive) ? (
+              <SelectionBox />
+            ) : null}
+
           </div>
         )}
 
         {/* Message Input */}
         <div className="mt-4 flex items-center border rounded-lg overflow-hidden">
+        {Number(from) === 2 && (
           <button
             className="bg-slate-300 text-black py-5 px-3"
-            onClick={toggleSelectionBox}
+            onClick={handleSelectionBox}
           >
             ?
           </button>
+        )}
           <input
             type="text"
             value={message}
@@ -129,7 +157,7 @@ const ChatPage = () => {
           />
           <button
             className="bg-green-600 text-white px-4 py-5"
-            onClick={sendMessage}
+            onClick={()=>sendMessage()}
             disabled={sendMessageMutation.isPending}
           >
             {sendMessageMutation.isPending ? "..." : "➤"}

@@ -1,11 +1,21 @@
+"use client"
+
 import { useGlobalStore } from "@/store/store";
+import { useRouter } from "next/navigation";
 
 const SelectionBox = () => {
-    const { closeSelectionBox, setTransactionType,transactionType } = useGlobalStore(); 
+  const router = useRouter()
+    const { closeSelectionBox, setTransactionType } = useGlobalStore(); 
     const handleSelection = (type: string) => {
-      console.log(type)
+      // console.log(type)
+
       setTransactionType(type)
       closeSelectionBox();
+      if(type == "swap"){
+        router.push("/checkout/swap")
+      }else{
+        router.push("/checkout/sell")
+      }
     };
 
     return (

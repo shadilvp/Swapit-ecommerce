@@ -37,6 +37,8 @@ const NotificationDropdown = () => {
     },
   });
 
+
+
   const isHomePage = pathName === "/";
 
   return (
@@ -92,6 +94,7 @@ const NotificationItem = ({ notification, isExpanded, setExpandedId, updateStatu
           <div>
             <p className="font-semibold text-black">{fromUserData?.user?.name || "Unknown User"}</p>
             <p className="text-sm text-black">{notification.message}</p>
+            <button >chat</button>
             {hasProducts && (
               <span className="text-xs text-gray-500 cursor-pointer" onClick={() => setExpandedId(isExpanded ? null : notification._id)}>
                 See more...
