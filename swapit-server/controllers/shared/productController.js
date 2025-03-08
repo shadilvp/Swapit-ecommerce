@@ -203,3 +203,88 @@ export const addCategories = async (req, res) => {
         return res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
 };
+
+
+// Edit Product ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+export const editProduct = async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const userId = req.user?.id;
+        const data = req.body;
+        const file = req.file;
+
+        // Validate product ID
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return res.status(400).json({ success: false, message: "Invalid product ID" });
+        }
+
+        const product = await Product.findById(productId);
+
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        // Check if the logged-in user is the seller of the product
+        if (product.seller?.toString() !== userId) {
+            return res.status(403).json({ success: false, message: "You are not authorized to edit this product" });
+        }
+
+        // Update product fields if provided in the request
+        if (data.name) product.name = data.name;
+        if (data.description) product.description = data.description;
+        if (data.quantity) product.quantity = Number(data.quantity);
+        if (data.price) product.price = Number(data.price);
+
+        // Update category and subcategory if provided
+        if (data.category) {
+            const categoryId = data.category;
+            const currentCategory = await Category.findById(categoryId);
+
+            if (!currentCategory) {
+                return res.status(400).json({ success: false, message: "Invalid category ID" });
+            }
+
+            product.category = categoryId;
+
+            // Validate subcategory if provided
+            if (data.subCategory) {
+                if (!currentCategory.subCategories.includes(data.subCategory)) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `Invalid sub-category. Available sub-categories: ${currentCategory.subCategories.join(", ")}`,
+                    });
+                }
+                product.subCategory = data.subCategory;
+            }
+        }
+
+        // Update image if a new file is provided
+        if (file) {
+            product.image = file.path;
+        }
+
+        // Update condition and location if provided
+        if (data.condition) {
+            product.condition = data.condition;
+        }
+
+        if (data.latitude && data.longitude && data.address) {
+            product.location = {
+                latitude: Number(data.latitude),
+                longitude: Number(data.longitude),
+                address: data.address,
+            };
+        }
+
+        // Save the updated product
+        await product.save();
+
+        return res.status(200).json({ success: true, message: "Product updated successfully", product });
+    } catch (error) {
+        console.error("Server Error:", error);
+        return res.status(500).json({ success: false, message: "Server error", error: error.message });
+    }
+};

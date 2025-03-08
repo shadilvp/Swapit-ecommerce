@@ -46,3 +46,8 @@ import axiosInstance from "@/utils/axiosInstence"
     const response = await axiosInstance.get(`/products/${productId}`);
     return response.data
   }
+
+  export const editProduct = async (productId:String,data:any) => {
+    const response = await axiosInstance.patch(`/products/${productId}`,data);
+    return response.data
+  }

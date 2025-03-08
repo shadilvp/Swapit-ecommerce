@@ -22,6 +22,13 @@ interface GlobalState {
   //selectionBox values state
   transactionType: string;
   setTransactionType: (type: string) => void;
+
+  //Amount for the product 
+  userOrDealer: number;
+  setuserOrDealer: (type: number) => void;
+
+  productId : string;
+  setProductId: (type: string) => void;
 }
 
 export const useGlobalStore = create<GlobalState>((set) => ({
@@ -44,4 +51,10 @@ export const useGlobalStore = create<GlobalState>((set) => ({
   //selectionBox values state
   transactionType: "available",
   setTransactionType: (type) => set({ transactionType: type }),
+
+  userOrDealer: 0,
+  setuserOrDealer: (value: number) => set({ userOrDealer: value }),
+
+  productId: "",
+  setProductId: (value: string) => set({ productId: value }),
 }));

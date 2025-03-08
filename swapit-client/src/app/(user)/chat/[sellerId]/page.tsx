@@ -12,7 +12,7 @@ import SelectionBox from "../selectionBoox";
 
 
 const ChatPage = () => {
-  const { showSelectionBox, toggleSelectionBox,transactionType } = useGlobalStore(); 
+  const { showSelectionBox, toggleSelectionBox,transactionType, setuserOrDealer, setProductId } = useGlobalStore(); 
   const { sellerId } = useParams();
   const searchParams = useSearchParams();
   const productId = searchParams.get("productId");
@@ -26,6 +26,15 @@ const ChatPage = () => {
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
   });
+
+  useEffect(() => {
+    if (from && productId) {
+      setuserOrDealer(Number(from)); 
+      setProductId(String(productId))
+    }
+  }, [from, productId]);
+
+
   const currentUser = data?.user._id;
 
   // Initialize socket connection

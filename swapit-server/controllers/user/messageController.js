@@ -15,6 +15,12 @@ export const sendMessage = async (req, res) => {
     }
   
     try {
+
+      if (selectionBox) {
+        // Find and delete any existing messages with the same productId and selectionBox: true
+        await Message.deleteMany({ product: productId, selectionBox: true });
+      }
+      
       const newMessage = new Message({ sender, receiver, message:finalMessage, product : productId, selectionBox, transactionType });
       await newMessage.save();
       console.log(newMessage)
