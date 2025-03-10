@@ -96,7 +96,7 @@ const SellPage = () => {
                   <p className="font-semibold text-sm">Robinson Printed</p>
                   <p className="text-gray-600 text-sm">$29.00</p>
                 </div>
-                <p className="text-xs text-gray-600">Star XXL | Color Blue</p>
+                <p className="text-xs text-gray-600">Star XL | Color Blue</p>
                 <p className="text-xs text-gray-600">Q1</p>
 
                 <div className="flex justify-between">
