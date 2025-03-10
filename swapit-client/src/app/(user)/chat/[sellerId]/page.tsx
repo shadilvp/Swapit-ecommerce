@@ -110,7 +110,7 @@ const ChatPage = () => {
   // console.log(messages)
   const isSelectionBoxActive = messages.some((msg: any) => msg.selectionBox === true && msg.product === productId);
 
-  console.log(isSelectionBoxActive)
+  // console.log(isSelectionBoxActive)
   return (
     <div className="min-h-screen bg-green-100 flex flex-col items-center py-6 pt-24">
       <div className="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg">

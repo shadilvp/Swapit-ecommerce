@@ -17,9 +17,9 @@ const SelectionBox = () => {
     queryFn: () => fetchSpecificProduct(productId),
     enabled: !!productId,
   });
-  const price = data
 
-  console.log(price)
+  const productPrice = data?.product?.price;
+  // console.log("product",productPrice)
 
   const updateProductMutation = useMutation({
     mutationFn: (data: { productId: string; price: number }) =>
@@ -59,9 +59,9 @@ const SelectionBox = () => {
     setTransactionType(type);
     closeSelectionBox();
     if (type === "swap") {
-      router.push("/checkout/swap");
+      router.push(`/checkout/swap?productId=${productId}`);
     } else {
-      router.push("/checkout/sell");
+      router.push(`/checkout/sell?productId=${productId}`);
     }
   };
 
@@ -71,9 +71,9 @@ const SelectionBox = () => {
   };
 
   return (
-    <div className="min-w-fit min-h-fit border-black p-2 bg-white shadow-md rounded-md">
-      {userOrDealer === 1 && localAmount && (
-        <p className="mb-2">Product amount is: {localAmount}</p>
+    <div className="min-w-fit min-h-fit border-black p-2 bg-white shadow-md rounded-md text-black">
+      {userOrDealer === 1 && productPrice && (
+        <p className="mb-2">Product amount is: {productPrice}</p>
       )}
 
       {userOrDealer === 2 && (
