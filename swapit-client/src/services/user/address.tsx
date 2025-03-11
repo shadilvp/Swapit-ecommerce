@@ -27,5 +27,5 @@ export const addAddress = async (formDataToSend:any) => {
 export const fetchSpecificAddress = async (addressId:any) => {
     const response = await axiosInstance.get(`/profile/address/${addressId}`);
     return response.data
-  }
+}
 

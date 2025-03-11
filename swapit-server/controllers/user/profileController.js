@@ -72,7 +72,7 @@ export const loadAddress = async (req,res) => {
     })
 }
 
-export const loadSpecificAddress = async (Req,res) => {
+export const loadSpecificAddress = async (req,res) => {
     const userId = req.user.id;
     const {addressId} = req.params;
     const user = await User.findById(userId)
