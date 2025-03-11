@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Joi from "joi";
 
 const addressSchema = new mongoose.Schema(
     {
@@ -44,8 +45,24 @@ const addressSchema = new mongoose.Schema(
             required: true 
         },
     }
-);
+)
 
-const Address = mongoose.model("Address", addressSchema);
+const validateAddress = (address) => {
+    const schema = Joi.object({
+        firstName: Joi.string().min(1).required().label("First Name"),
+        lastName: Joi.string().min(1).required().label("Last Name"),
+        email: Joi.string().email().required().label("Email"),
+        mobile: Joi.string().pattern(/^[0-9]{10}$/).required().label("Mobile"),
+        addressLine: Joi.string().min(5).required().label("Address Line"),
+        city: Joi.string().min(2).required().label("City"),
+        state: Joi.string().min(2).required().label("State"),
+        pinCode: Joi.string().pattern(/^[0-9]{6}$/).required().label("Pin Code"),
+        country: Joi.string().min(2).required().label("Country"),
+    });
+    return schema.validate(address);
+};
 
-export  {Address};
+
+const Address = mongoose.model("Address",addressSchema)
+
+export {Address, validateAddress};
