@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchSpecificProduct } from "@/services/product";
 import { useParams, useRouter } from "next/navigation";
 import { fetchSpecificUser } from "@/services/users";
+import Loader from "@/components/ui/simpleLoadder";
+import ChatWithSellerButton from "@/components/ui/chatWithSeller";
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -30,7 +32,7 @@ const ProductDetails = () => {
   });
 
   const num = 1
-  if (isLoading) return <h1 className="text-center text-lg font-bold">Loading Product ...</h1>;
+  if (isLoading) return <Loader />;
   if (error) return <p className="text-center text-red-500">Error fetching product</p>;
   const handleChat = () => {
     if (sellerId && productId) {
@@ -64,21 +66,18 @@ const ProductDetails = () => {
           </div>
 
           {/* Seller Box */}
-          <div className="bg-white p-4 rounded-lg shadow-md">
+          <div className="bg-white p-4 rounded-lg shadow-md ">
             <h2 className="text-xl font-semibold">Seller</h2>
             {sellerLoading ? (
-              <p className="text-gray-500">Loading seller...</p>
+              <Loader />
             ) : sellerError ? (
               <p className="text-red-500">Error fetching seller</p>
             ) : (
               <p className="text-gray-700">{sellerData?.user?.name || "Unknown Seller"}</p>
             )}
-            <button 
-              className="mt-2 w-full bg-green-700 text-white py-2 rounded"
-              onClick={handleChat}
-            >
-              Chat with Seller
-            </button>
+            <div className="mt-2 w-full items-center" onClick={handleChat}>
+              <ChatWithSellerButton />
+            </div>
           </div>
 
           {/* Location Box */}

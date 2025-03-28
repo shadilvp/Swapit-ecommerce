@@ -6,12 +6,15 @@ import { fetchProducts, fetchCategories } from "@/services/product";
 
 import { DropdownMenu } from "@/components/ui/dropDownMenu";
 import Button from "@/components/ui/button";
-import Checkbox from "@/components/ui/checkBox";
+import Checkbox from "@/components/ui/checkBox1";
 import Input from "@/components/ui/input";
 import Select from "@/components/ui/selectionBox";
 import { Eye, Edit, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useGlobalStore } from '@/store/store';
+import DeleteButton from "@/components/ui/deleteIcon";
+import EditButton from "@/components/ui/editButton";
+
 
 
 const NewProducts = () => {
@@ -159,10 +162,10 @@ const NewProducts = () => {
                     <Eye size={30} />
                   </button>
                   <button className="text-green-500 hover:text-green-700">
-                    <Edit size={30} />
+                    <EditButton/>
                   </button>
                   <button className="text-red-500 hover:text-red-700">
-                    <Trash size={30} />
+                    <DeleteButton  />
                   </button>
                 </td>
               </tr>

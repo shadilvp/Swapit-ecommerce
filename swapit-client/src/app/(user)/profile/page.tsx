@@ -6,6 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { editProfile, fetchUserProfile } from "@/services/user/profile";
 import { useRouter } from "next/navigation";
 import SpecificUserProductList from "./SpecificUserProductList";
+import Loader from "@/components/ui/imageLoader";
 
 const Profile = () => {
   const router = useRouter();
@@ -50,7 +51,7 @@ const Profile = () => {
     },
   });
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Loader />;
   if (error) return <p>Error loading profile</p>;
 
   const user = data?.user;

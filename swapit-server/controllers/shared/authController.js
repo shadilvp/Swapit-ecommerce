@@ -62,7 +62,6 @@ export const googleAuth = async (req, res) => {
   try {
     console.log("hy")
     const { name, email, googleId } = req.body;
-    console.log("name:",name, "email:",email, "googleId:",googleId)
 
     let user = await User.findOne({ email });
 
@@ -283,7 +282,7 @@ export const refreshAccessToken = async (req, res) => {
             return res.status(403).json({ message: "Invalid Refresh Token" });
         }
 
-        const newAccessToken = generateAccessToken(user);
+        const newAccessToken = generateAccessToken(user._id);
         res.cookie("accessToken", newAccessToken, {
             httpOnly: true,
             secure: false,

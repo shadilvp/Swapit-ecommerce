@@ -3,6 +3,7 @@
 
 import { FiMenu } from "react-icons/fi";
 import { useGlobalStore } from "@/store/store";
+import AdminPanelName from "../ui/adminPanelName";
 
 const NavbarToggleButton = () => {
   const {toggleSidebar,isCollapsed} = useGlobalStore  ();
@@ -12,7 +13,7 @@ const NavbarToggleButton = () => {
       <button onClick={toggleSidebar} className="text-xl">
         <FiMenu />
       </button>
-      <h1 className="text-lg font-bold">Admin Panel</h1>
+      <AdminPanelName/>
     </nav>
   );
 };
