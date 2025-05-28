@@ -19,10 +19,12 @@ const Header = () => {
 
   const isHomePage = pathName === "/";
 
+  
+
   return (
     <header
       className={`fixed top-0 left-0 w-full py-4 transition-all z-50 ${
-        isHomePage ? "bg-gradient-to-r from-[#02AE65] to-[#024529]" : "bg-white shadow-md"
+        isHomePage ? "bg-gradient-to-r from-[#02ae6600] to-[#02452900]" : "bg-white shadow-md"
       }`}
     >
       <div className="container mx-auto flex justify-between items-center px-6">

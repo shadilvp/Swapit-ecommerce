@@ -6,7 +6,7 @@ import { useState } from "react";
 import { editProduct, fetchSpecificProduct } from "@/services/product";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-const SelectionBox = () => {
+const SenderSelectionBox = () => {
   const router = useRouter();
   const { closeSelectionBox, setTransactionType, userOrDealer, productId } = useGlobalStore();
   const [localAmount, setLocalAmount] = useState("");
@@ -118,4 +118,4 @@ const SelectionBox = () => {
   );
 };
 
-export default SelectionBox;
+export default SenderSelectionBox;

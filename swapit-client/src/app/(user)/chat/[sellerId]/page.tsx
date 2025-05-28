@@ -7,7 +7,7 @@ import io from "socket.io-client";
 import { fetchMessages, sendMessageApi } from "@/services/user/message";
 import { fetchUserProfile } from "@/services/user/profile";
 import { useGlobalStore } from "@/store/store";
-import SelectionBox from "../selectionBoox";
+import SenderSelectionBox from "../selectionBoox";
 
 
 
@@ -141,7 +141,7 @@ const ChatPage = () => {
             })}
 
             {(Number(from) === 2 && showSelectionBox) || (Number(from) === 1 && isSelectionBoxActive) ? (
-              <SelectionBox />
+              <SenderSelectionBox />
             ) : null}
 
           </div>

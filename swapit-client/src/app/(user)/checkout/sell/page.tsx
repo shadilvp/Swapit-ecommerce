@@ -227,7 +227,7 @@ const SellPage = () => {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-xl font-bold">Shopping Cart</h1>
-          <p className="text-sm text-gray-600">Homepage / Clothing Categories / MZ.Shaealog.Cart</p>
+          <p className="text-sm text-gray-600">Homepage / Checkout </p>
         </div>
 
         {/* Main Content Grid */}

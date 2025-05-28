@@ -140,7 +140,7 @@ const AddProduct = () => {
             required
             className="w-full p-3 border border-gray-300 rounded-lg text-gray-700"
           />
-          <input
+          <input 
             type="number"
             name="price"
             min="0"
