@@ -10,6 +10,7 @@ import { GoogleLogin, googleLogout } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { googleAuth } from "@/services/auth";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import {toast} from "sonner"
 
 
 const loginPage = () => {
@@ -33,12 +34,15 @@ const loginPage = () => {
       console.log("Login Successful:", data);
   
       if (data.role === "admin") {
+        toast.success('admin loggined succesfully')
         router.push("/dashboard");
       } else {
+        toast.success('user loggined succesfully')
         router.push("/");
       }
     },
     onError: (error) => {
+      toast.error('no user found')
       console.error("Login failed:", error);
     },
   });
@@ -62,9 +66,11 @@ const loginPage = () => {
 
     try {
       const res = await googleAuth(googleUser);
+      toast.success('user loggined succesfully')
       console.log("Google Login Success:", res);
       router.push("/");
     } catch (error) {
+      toast.error('login failed')
       console.error("Google Login Error:", error);
     }
   };
@@ -83,7 +89,7 @@ const loginPage = () => {
 
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
       <div className="w-full max-w-md bg-[#175F3C] bg-opacity-40 shadow-lg rounded-[50px] p-6">
-  <h2 className="text-2xl font-bold text-black text-center mb-6">Create Account</h2>
+  <h2 className="text-2xl font-bold text-black text-center mb-6">Login</h2>
 
   <Formik
     initialValues={{

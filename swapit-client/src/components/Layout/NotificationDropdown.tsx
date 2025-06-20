@@ -45,7 +45,7 @@ const NotificationDropdown = () => {
     <div className="relative">
       {/* Bell Icon - Click to Toggle */}
       <div className="relative inline-block" onClick={() => setIsOpen(!isOpen)}>
-        <Bell className={`${isHomePage ? "text-white hover:text-gray-300" : "text-black hover:text-gray-600"} cursor-pointer`} size={24}/>
+        <Bell className={`${isHomePage ? "text-white hover:text-gray-300 mt-3" : "text-black hover:text-gray-600 mt-3"} cursor-pointer`} size={24}/>
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
             {unreadCount}

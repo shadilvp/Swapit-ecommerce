@@ -41,8 +41,8 @@ const ProductDetails = () => {
   };
 
   return (
-    <div className="min-h-screen p-6 bg-gray-100 flex justify-center items-center">
-      <div className="flex flex-col md:flex-row gap-6 max-w-5xl w-full">
+    <div className="min-h-[80vh] p-6 bg-gray-100 flex justify-center items-center">
+      <div className="flex flex-col md:flex-row gap-6 max-w-4xl w-full m-20">
         {/* Left: Product Image & Details */}
         <div className="md:w-1/2 w-full bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
           <img

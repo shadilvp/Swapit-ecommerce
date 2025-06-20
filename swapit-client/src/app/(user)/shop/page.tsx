@@ -14,6 +14,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import SearchInput from "@/components/ui/search";
 import Radio from "@/components/ui/radioButton";
 
+import {toast} from "sonner"
+
 const Shop = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -62,7 +64,7 @@ const Shop = () => {
 
   const handleSwapCartButton = (product: any) => {
     if (product.condition === "new") {
-      router.push("/");
+      toast.error('Currently the product is not available!')
     } else {
       router.push(`/swapProduct?id=${product._id}&source=shop`);
     }
@@ -70,10 +72,10 @@ const Shop = () => {
 
   return (
     <div
-      className={`bg-[#e8e8e8] min-h-screen transition-all duration-300  md:px-16 py-4 mt-20`}
+      className={`bg-[#e8e8e8] min-h-screen transition-all duration-300   md:px-16 py-4 mt-14`}
     >
       <div className="w-full font-extralight">
-        <h2 className="text-8xl text-green-800 mb-2 ">Catalog</h2>
+        <h2 className="text-7xl text-green-800 mb-2 font-extralight">Catalog</h2>
         <div className="max-w-prose h-1 bg-green-800 mt-4"></div>
       </div>
       <br />
@@ -81,8 +83,8 @@ const Shop = () => {
 
       <div className="flex gap-6">
         {/* Fixed Sidebar Filters */}
-        <aside className="hidden md:block w-1/4 p-6  h-screen sticky top-6 mr-6 text-green-800">
-          <h3 className="text-lg font-semibold  mb-4">Filters</h3>
+        <aside className="hidden md:block w-1/4 p-4 mb-32  h-screen sticky top-16 mr-6 text-green-800">
+          <h3 className="text-lg font-semibold">Filters</h3>
 
           {/* Search */}
           <SearchInput
@@ -167,8 +169,8 @@ const Shop = () => {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1">
-          <div className="md:hidden mb-4">
+        <main className="flex-1 mb-14">
+          <div className="md:hidden mb-14">
             <DropdownMenu>
               <div className="p-4 bg-white rounded-lg shadow z-40">
                 <Input

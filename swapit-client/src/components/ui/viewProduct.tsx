@@ -26,8 +26,8 @@ const StyledWrapper = styled.div`
   .Btn {
     border: none;
     border-radius: 50%;
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -53,7 +53,7 @@ const StyledWrapper = styled.div`
     position: absolute;
     color: rgb(255, 255, 255);
     width: 100px;
-    font-weight: 400;
+    font-weight: 200;
     opacity: 0;
     transition-duration: 0.4s;
   }

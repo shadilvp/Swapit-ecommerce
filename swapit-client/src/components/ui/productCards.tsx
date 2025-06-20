@@ -11,7 +11,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
-  product,
+  product,  
   handleSwapCartButton,
 }) => {
   const router = useRouter();

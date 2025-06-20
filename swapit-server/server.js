@@ -30,7 +30,7 @@ app.use(errorHandler)
 app.use(cookieParser());
 
 app.use(cors({
-  origin: ["http://localhost:3000", "http://51.21.252.76", "https://swapit.duckdns.org"],
+  origin: ["http://localhost:3000"],
   allowedHeaders: "Content-Type,Authorization",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"],

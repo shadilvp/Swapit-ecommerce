@@ -22,7 +22,7 @@ const ChatWithSellerButton = () => {
 const StyledWrapper = styled.div`
   button {
     font-family: inherit;
-    font-size: 20px;
+    font-size: 12px;
     background: green;
     color: white;
     padding: 0.7em 1em;

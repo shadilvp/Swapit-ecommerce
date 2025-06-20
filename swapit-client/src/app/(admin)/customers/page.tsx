@@ -8,7 +8,7 @@ import { useGlobalStore } from '@/store/store';
 import { Edit, Eye, Trash, User } from "lucide-react";
 import { DropdownMenu } from "@/components/ui/dropDownMenu";
 import Button from "@/components/ui/button";
-import Checkbox from "@/components/ui/checkBox";
+import Checkbox from "@/components/ui/checkBox1";
 import Input from "@/components/ui/input";
 
 

@@ -5,8 +5,11 @@ import { Upload, Package, Edit, ShoppingCart, LogOut, MessageCircleMore } from "
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { editProfile, fetchUserProfile } from "@/services/user/profile";
 import { useRouter } from "next/navigation";
+import { logoutUser } from "@/services/auth";
 import SpecificUserProductList from "./SpecificUserProductList";
 import Loader from "@/components/ui/imageLoader";
+import {toast} from "sonner"
+
 
 const Profile = () => {
   const router = useRouter();
@@ -81,16 +84,35 @@ const Profile = () => {
     }
   
     mutation.mutate(formDataToSend);
-  };
+    toast.success('profile updated succesfully')
 
+    
+  };
   const handleMessages = () => {
     router.push("/profile/messages")
   }
 
   const handleSelProduct = () => {
-    console.log("hy")
     router.push("/profile/sellProduct")
   }
+
+  const handleLogout = async () => {
+  try {
+    await logoutUser();
+    toast.success('user logged out')
+    router.push("/login");
+  } catch (err) {
+    console.error("Logout failed:", err);
+  }
+};
+
+if (!user) {
+  return (
+    <div className="pt-20 flex justify-center items-center min-h-screen text-gray-700 text-lg">
+      <p>No user logged in. Please <span onClick={() => router.push("/login")} className="text-green-700 underline cursor-pointer">login</span> to view your profile.</p>
+    </div>
+  );
+}
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6 text-gray-700 pt-20">
@@ -143,7 +165,7 @@ const Profile = () => {
           </button>
           <button
             className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700"
-            onClick={() => router.push("/login")}
+            onClick={handleLogout}
           >
             <LogOut size={16} /> <span>Log Out</span>
           </button>
