@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import expImage1 from "../../public/expImage1.png";
 import expImage2 from "../../public/expImage2.png";
 import RotatingCard from "@/components/ui/rotatingCards";
+import PeopleReviewCard from "@/components/ui/peopleReviewCard";
 // import Footer from "@/components/Footer"; // Ensure you have a footer component
 
 const Home = () => {
@@ -102,7 +103,7 @@ const Home = () => {
       </div>
 
       {/* Featured Section (Placeholder for Gray Box in your Design) */}
-      <section className="min-h-screen bg-white   snap-start">
+      <section className="min-h-screen bg-white   ">
         <div className="w-4/4 h-3/4  rounded-xl">
           <div className="mt-20 space-y-20">
             {/* First Section */}
@@ -154,9 +155,12 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      {/* Footer Section */}
-      {/* <Footer /> */}
+      <section className=" min-h-[50vh] flex justify-center items-center m-20" >
+        <div >
+          <h3 className="text-gray-600 font-bold text-2xl mb-20 ml-20">CUSTOMER REVIEWS</h3>
+          <PeopleReviewCard/>
+        </div>
+      </section>
     </div>
   );
 };

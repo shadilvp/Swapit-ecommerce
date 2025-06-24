@@ -14,21 +14,6 @@ const UserRegister = () => {
 
   const [bgImage, setBgImage] = useState<string>("");
 
-  useEffect(() => {
-    const updateBackground = () => {
-      setBgImage(
-        window.innerWidth >= 500
-          ? "url('/Web_Photo_Editor 1@2x (1).png')"
-          : "url('freepik__adjust__49700.png')"
-      );
-    };
-
-    updateBackground();
-    window.addEventListener("resize", updateBackground);
-
-    return () => window.removeEventListener("resize", updateBackground);
-  }, []);
-
   const mutation = useMutation({
     mutationFn: registerUser,
     onSuccess: () => {
@@ -63,13 +48,8 @@ const UserRegister = () => {
         "1086489884784-2e3p2a6e32tc8ms6arpusk39fi0rm8ib.apps.googleusercontent.com"
       }
     >
-      <div
-        className="flex h-screen w-full bg-no-repeat bg-cover "
-        style={{ backgroundImage: bgImage }}
-      >
-        <div className="w-1/2 hidden lg:flex items-center justify-center h-screen"></div>
-
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+      <div className="flex h-screen w-full bg-gradient-to-r from-[#000] to-[#276539]">
+        <div className="w-full flex items-center justify-center p-8">
           <div className="w-full max-w-md bg-[#175F3C] bg-opacity-40 shadow-lg rounded-[50px] p-6">
             <h2 className="text-2xl font-bold text-black text-center mb-6">
               Create Account
@@ -178,7 +158,16 @@ const UserRegister = () => {
             </Formik>
 
             {/* Google Sign Up */}
-            <div className="flex justify-center mt-4">
+            <div className="flex flex-col  items-center m-4">
+              <p className="p-4">
+                Already have an Account{" "}
+                <a
+                  className="text-[#73ff1c] hover:underline"
+                  href="/login"
+                >
+                  Log In
+                </a>
+              </p>
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={() => console.log("Login Failed")}
