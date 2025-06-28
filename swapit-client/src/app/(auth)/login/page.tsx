@@ -5,16 +5,15 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "@/services/auth";
-import { useState, useEffect } from "react";
-import { GoogleLogin, googleLogout } from "@react-oauth/google";
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { googleAuth } from "@/services/auth";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { toast } from "sonner";
-import loginimg1 from "../../../../public/login/login.png";
-import loginimg2 from "../../../../public/login/loginMD.png";
+import { AxiosError } from "axios";
 
-const loginPage = () => {
+
+const LoginPage = () => {
   const router = useRouter();
   const mutation = useMutation({
     mutationFn: login,
@@ -41,14 +40,21 @@ const loginPage = () => {
     sub: string;
   }
 
-  const handleGoogleSuccess = async (credentialResponse: any) => {
+  const handleGoogleSuccess = async (
+    credentialResponse: CredentialResponse
+  ) => {
+    if (!credentialResponse.credential) {
+      toast.error("Invalid credential from Google");
+      return;
+    }
+
     const decoded = jwtDecode<GoogleJwtPayload>(credentialResponse.credential);
     console.log("Decoded Google User:", decoded);
 
     const googleUser = {
       name: decoded.name,
       email: decoded.email,
-      googleId: decoded.sub, // Google User ID
+      googleId: decoded.sub,
     };
 
     try {
@@ -92,10 +98,14 @@ const loginPage = () => {
               })}
               onSubmit={(values, { setSubmitting, setErrors }) => {
                 mutation.mutate(values, {
-                  onError: (error: any) => {
+                  onError: (error) => {
+                    const axiosError = error as AxiosError<{
+                      message?: string;
+                    }>;
                     setErrors({
                       email:
-                        error.response?.data?.message || "Registration failed",
+                        axiosError.response?.data?.message ||
+                        "Registration failed",
                     });
                     setSubmitting(false);
                   },
@@ -143,7 +153,7 @@ const loginPage = () => {
                   </div>
 
                   <p className="text-center text-black mt-4">
-                    Don't have an acount?{" "}
+                    Don&#39;t have an acount?{" "}
                     <a
                       href="/user-register"
                       className="text-[#fff] hover:underline"
@@ -168,4 +178,4 @@ const loginPage = () => {
   );
 };
 
-export default loginPage;
+export default LoginPage;

@@ -3,18 +3,18 @@ import styled from "styled-components";
 import { Heart } from "lucide-react";
 import AddButton from "@/components/ui/addButton";
 import ProductViewButton from "./viewProduct";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { Product } from "@/types";
 
 interface ProductCardProps {
-  product: any;
-  handleSwapCartButton: (product: any) => void;
+  product: Product;
+  handleSwapCartButton: (product: Product) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
   product,  
   handleSwapCartButton,
 }) => {
-  const router = useRouter();
 
   return (
     <StyledWrapper>
@@ -26,7 +26,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Product Image */}
         <div className="image-container">
-          <img src={product.image} alt={product.name} className="image" />
+          <Image src={product.image} alt={product.name} className="image" />
           <div className="view-button">
             <ProductViewButton productId={product._id} />
           </div>

@@ -8,7 +8,6 @@ import expImage1 from "../../public/expImage1.png";
 import expImage2 from "../../public/expImage2.png";
 import RotatingCard from "@/components/ui/rotatingCards";
 import PeopleReviewCard from "@/components/ui/peopleReviewCard";
-// import Footer from "@/components/Footer"; // Ensure you have a footer component
 
 const Home = () => {
   const router = useRouter();
@@ -22,7 +21,7 @@ const Home = () => {
     { title: "books", img: "/Books.png" },
   ];
 
-  const handleCategoryClick = (category: any) => {
+  const handleCategoryClick = (category: string) => {
     router.push(`/shop?category=${encodeURIComponent(category)}`);
   };
 

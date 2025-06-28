@@ -39,7 +39,7 @@ axiosInstance.interceptors.response.use(
 
         return axiosInstance(originalRequest);
       } catch (err) {
-        console.error("Refresh token failed, logging out...");
+        console.error("Refresh token failed, logging out...",err);
         Cookies.remove("accessToken");
         Cookies.remove("refreshToken");
         window.location.href = "/login";

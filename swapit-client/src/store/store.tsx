@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { Product } from "@/types"; // ✅ import your Product type
 
 interface GlobalState {
   // Sidebar State
@@ -8,10 +9,10 @@ interface GlobalState {
   toggleSidebar: () => void;
 
   // Swap Product State
-  selectedProduct: any | null;
-  swappingProduct: any | null;
-  setSelectedProduct: (product: any) => void;
-  setSwappingProduct: (product: any) => void;
+  selectedProduct: Product | null;
+  swappingProduct: Product | null;
+  setSelectedProduct: (product: Product | null) => void;
+  setSwappingProduct: (product: Product | null) => void;
   resetSwap: () => void;
 
   // Selection Box State
@@ -19,15 +20,15 @@ interface GlobalState {
   toggleSelectionBox: () => void;
   closeSelectionBox: () => void;
 
-  //selectionBox values state
+  // Selection Box values state
   transactionType: string;
   setTransactionType: (type: string) => void;
 
-  //Amount for the product 
+  // Amount for the product
   userOrDealer: number;
   setuserOrDealer: (type: number) => void;
 
-  productId : string;
+  productId: string;
   setProductId: (type: string) => void;
 }
 
@@ -48,7 +49,7 @@ export const useGlobalStore = create<GlobalState>((set) => ({
   toggleSelectionBox: () => set((state) => ({ showSelectionBox: !state.showSelectionBox })),
   closeSelectionBox: () => set({ showSelectionBox: false }),
 
-  //selectionBox values state
+  // Selection Box values state
   transactionType: "available",
   setTransactionType: (type) => set({ transactionType: type }),
 

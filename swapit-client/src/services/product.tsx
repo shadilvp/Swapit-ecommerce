@@ -1,4 +1,5 @@
 import axiosInstance from "@/utils/axiosInstence"
+import { ProductUpdatePayload } from "@/types";
 
 
   export const addProduct = async (data:FormData) => {
@@ -42,12 +43,12 @@ import axiosInstance from "@/utils/axiosInstence"
   }
 
 
-  export const fetchSpecificProduct = async (productId:any) => {
+  export const fetchSpecificProduct = async (productId:string) => {
     const response = await axiosInstance.get(`/products/${productId}`);
     return response.data
   }
 
-  export const editProduct = async (productId:String,data:any) => {
+  export const editProduct = async (productId:string,data: ProductUpdatePayload ) => {
     const response = await axiosInstance.patch(`/products/${productId}`,data);
     return response.data
   }

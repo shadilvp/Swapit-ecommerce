@@ -15,13 +15,11 @@ export const fetchUsers = async ({
 
 
 export const blockUser = async (userId:string) => {
-  // console.log("userId", userId)
   const response = await axiosInstance.patch(`/users/block/${userId}`);
-  // console.log("data",response.data)
   return response.data
 }
 
-export const fetchSpecificUser = async (userId:any) => {
+export const fetchSpecificUser = async (userId:string) => {
   const response = await axiosInstance.get(`/users/${userId}`);
   return response.data
 }

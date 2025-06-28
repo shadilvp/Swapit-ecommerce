@@ -3,7 +3,7 @@
 import { useGlobalStore } from '@/store/store';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiHome, FiBox, FiUsers, FiShoppingCart, FiStar, FiLogOut, FiSearch, FiPlus, FiX } from 'react-icons/fi';
+import { FiHome, FiBox, FiUsers, FiShoppingCart, FiStar, FiLogOut, FiSearch, FiX } from 'react-icons/fi';
 import Image from 'next/image';
 import { logoutUser } from '@/services/auth';
 import { useMutation } from '@tanstack/react-query';

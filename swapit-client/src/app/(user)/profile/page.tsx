@@ -8,19 +8,15 @@ import { useRouter } from "next/navigation";
 import { logoutUser } from "@/services/auth";
 import SpecificUserProductList from "./SpecificUserProductList";
 import Loader from "@/components/ui/imageLoader";
-import {toast} from "sonner"
-
+import { toast } from "sonner";
+import Image from "next/image";
+import { EditProfilePayload } from "@/types";
 
 const Profile = () => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<{
-    profileImage: string | File | null;
-    name: string;
-    email: string;
-    phone: string;
-  }>({
-    profileImage: null, // Change from File to null
+  const [formData, setFormData] = useState<EditProfilePayload >({
+    profileImage: null,
     name: "",
     email: "",
     phone: "",
@@ -48,24 +44,19 @@ const Profile = () => {
     mutationFn: editProfile,
     onSuccess: () => {
       setIsEditing(false);
+      toast.success("Profile updated successfully");
     },
     onError: (error) => {
       console.error("Profile update failed:", error);
     },
   });
 
-  if (isLoading) return <Loader />;
-  if (error) return <p>Error loading profile</p>;
-
-  const user = data?.user;
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file); // Preview only
       setFormData((prev) => ({
         ...prev,
-        profileImage: file, // Store actual file
+        profileImage: file,
       }));
     }
   };
@@ -79,52 +70,61 @@ const Profile = () => {
     formDataToSend.append("name", formData.name);
     formDataToSend.append("email", formData.email);
     formDataToSend.append("phone", formData.phone);
-    if (formData.profileImage && formData.profileImage instanceof File) {
+    if (formData.profileImage instanceof File) {
       formDataToSend.append("profileImage", formData.profileImage);
     }
-  
+
     mutation.mutate(formDataToSend);
-    toast.success('profile updated succesfully')
-
-    
   };
-  const handleMessages = () => {
-    router.push("/profile/messages")
-  }
 
-  const handleSelProduct = () => {
-    router.push("/profile/sellProduct")
-  }
+  const handleMessages = () => router.push("/profile/messages");
+  const handleSelProduct = () => router.push("/profile/sellProduct");
 
   const handleLogout = async () => {
-  try {
-    await logoutUser();
-    toast.success('user logged out')
-    router.push("/login");
-  } catch (err) {
-    console.error("Logout failed:", err);
-  }
-};
+    try {
+      await logoutUser();
+      toast.success("User logged out");
+      router.push("/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
 
-if (!user) {
-  return (
-    <div className="pt-20 flex justify-center items-center min-h-screen text-gray-700 text-lg">
-      <p>No user logged in. Please <span onClick={() => router.push("/login")} className="text-green-700 underline cursor-pointer">login</span> to view your profile.</p>
-    </div>
-  );
-}
+  if (isLoading) return <Loader />;
+  if (error) return <p>Error loading profile</p>;
+
+  const user = data?.user;
+
+  if (!user) {
+    return (
+      <div className="pt-20 flex justify-center items-center min-h-screen text-gray-700 text-lg">
+        <p>
+          No user logged in. Please{" "}
+          <span onClick={() => router.push("/login")} className="text-green-700 underline cursor-pointer">
+            login
+          </span>{" "}
+          to view your profile.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6 text-gray-700 pt-20">
       <div className="flex items-center justify-between">
         <div className="flex flex-col items-center">
-          <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-300 shadow-md">
+          <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-300 shadow-md relative">
             {formData.profileImage ? (
-              <img
-              src={formData.profileImage instanceof File ? URL.createObjectURL(formData.profileImage) : formData.profileImage || ""}
-              alt="Profile"
-              className="w-full h-full object-cover"
-            />
+              <Image
+                src={
+                  formData.profileImage instanceof File
+                    ? URL.createObjectURL(formData.profileImage)
+                    : formData.profileImage
+                }
+                alt="Profile"
+                fill
+                className="object-cover"
+              />
             ) : (
               <Upload size={32} className="text-gray-500" />
             )}
@@ -146,21 +146,19 @@ if (!user) {
         </div>
 
         <div className="flex space-x-4 mt-4">
-          <button 
+          <button
             className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700"
             onClick={handleMessages}
-            >
+          >
             <MessageCircleMore size={16} /> <span>Messages</span>
           </button>
-          <button 
-            className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700"
-            >
+          <button className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700">
             <ShoppingCart size={16} /> <span>Orders</span>
           </button>
-          <button 
+          <button
             className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700"
             onClick={handleSelProduct}
-            >
+          >
             <Package size={16} /> <span>Sell Product</span>
           </button>
           <button
@@ -185,7 +183,7 @@ if (!user) {
                 className="bg-green-100 p-3 w-full rounded-3xl text-green-900 border border-green-300"
               />
             ) : (
-              <div className="bg-green-100 p-3 rounded-3xl text-green-900 rounded-tl-none  ">{formData.name}</div>
+              <div className="bg-green-100 p-3 rounded-3xl text-green-900 rounded-tl-none">{formData.name}</div>
             )}
           </div>
           <div>
@@ -214,7 +212,9 @@ if (!user) {
               className="bg-green-50 p-3 w-full rounded-3xl text-green-900 border border-green-300"
             />
           ) : (
-            <div className="bg-green-100 p-3 rounded-3xl text-green-900 rounded-tl-none">{formData.phone || "No phone number"}</div>
+            <div className="bg-green-100 p-3 rounded-3xl text-green-900 rounded-tl-none">
+              {formData.phone || "No phone number"}
+            </div>
           )}
         </div>
       </div>

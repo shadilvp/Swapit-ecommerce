@@ -6,8 +6,18 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addProduct, fetchCategories } from "@/services/product";
 import AddImage from "@/components/ui/uploadProduct";
+import Image from "next/image";
+import { AxiosError } from "axios";
 
-const sellProduct = () => {
+
+// Define category and subcategory types
+interface Category {
+  _id: string;
+  name: string;
+  subCategories: string[];
+}
+
+const SellProduct = () => {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -23,6 +33,7 @@ const sellProduct = () => {
     address: "",
     condition: "used",
   });
+
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const getLocation = () => {
@@ -31,14 +42,12 @@ const sellProduct = () => {
         async (position) => {
           const { latitude, longitude } = position.coords;
 
-          // Update formData with latitude and longitude
           setFormData((prev) => ({
             ...prev,
             latitude,
             longitude,
           }));
 
-          // Get address using reverse geocoding
           try {
             const res = await fetch(
               `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
@@ -65,7 +74,7 @@ const sellProduct = () => {
     data: categories,
     isLoading,
     error,
-  } = useQuery({
+  } = useQuery<Category[]>({
     queryKey: ["categories"],
     queryFn: fetchCategories,
   });
@@ -81,14 +90,12 @@ const sellProduct = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      console.log("Selected file:", file);
-
       const previewURL = URL.createObjectURL(file);
       setImagePreview(previewURL);
 
       setFormData((prev) => ({
         ...prev,
-        image: file, // Update the image in the form data
+        image: file,
       }));
     }
   };
@@ -120,8 +127,9 @@ const sellProduct = () => {
       const response = await addProduct(data);
       alert(response.message);
       router.push("/profile");
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      alert(err.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -168,7 +176,7 @@ const sellProduct = () => {
               className="w-full p-3 border border-gray-300 rounded-lg text-gray-700"
             >
               <option value="">Select Category</option>
-              {categories?.map((category: any) => (
+              {categories?.map((category) => (
                 <option key={category._id} value={category._id}>
                   {category.name}
                 </option>
@@ -185,8 +193,8 @@ const sellProduct = () => {
               <option value="">Select Subcategory</option>
               {formData.category &&
                 categories
-                  ?.find((cat: any) => cat._id === formData.category)
-                  ?.subCategories.map((sub: string) => (
+                  ?.find((cat) => cat._id === formData.category)
+                  ?.subCategories.map((sub) => (
                     <option key={sub} value={sub}>
                       {sub}
                     </option>
@@ -227,14 +235,15 @@ const sellProduct = () => {
             <AddImage onImageChange={handleImageChange} />
             {imagePreview && (
               <div className="mt-3">
-                <p className="text-gray-700">
-                  {imagePreview ? "Slected Image" : "No image selected"}
-                </p>
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  className="w-full h-auto rounded-lg border border-gray-300 max-w-20 max-h-20"
-                />
+                <p className="text-gray-700">Selected Image:</p>
+                <div className="relative w-20 h-20 border border-gray-300 rounded-lg overflow-hidden">
+                  <Image
+                    src={imagePreview}
+                    alt="Preview"
+                    fill
+                    className="object-cover rounded"
+                  />
+                </div>
               </div>
             )}
           </div>
@@ -278,4 +287,4 @@ const sellProduct = () => {
   );
 };
 
-export default sellProduct;
+export default SellProduct;

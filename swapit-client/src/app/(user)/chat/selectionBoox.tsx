@@ -10,7 +10,7 @@ const SenderSelectionBox = () => {
   const router = useRouter();
   const { closeSelectionBox, setTransactionType, userOrDealer, productId } = useGlobalStore();
   const [localAmount, setLocalAmount] = useState("");
-  const [isConfirmed, setIsConfirmed] = useState(false); // Track if the amount is confirmed
+  const [isConfirmed, setIsConfirmed] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["product", productId],
@@ -19,14 +19,13 @@ const SenderSelectionBox = () => {
   });
 
   const productPrice = data?.product?.price;
-  // console.log("product",productPrice)
 
   const updateProductMutation = useMutation({
     mutationFn: (data: { productId: string; price: number }) =>
       editProduct(data.productId, { price: data.price }),
     onSuccess: () => {
       console.log("Product price updated successfully");
-      setIsConfirmed(true); // Set confirmed to true after successful update
+      setIsConfirmed(true);
     },
     onError: (error) => {
       console.error("Error updating product price:", error);
@@ -70,6 +69,22 @@ const SenderSelectionBox = () => {
     setLocalAmount(value);
   };
 
+  if (isLoading) {
+    return (
+      <div className="p-4 bg-white rounded-md text-center text-green-600 shadow">
+        Loading product details...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 bg-red-100 rounded-md text-center text-red-600 shadow">
+        Failed to fetch product details. Please try again.
+      </div>
+    );
+  }
+
   return (
     <div className="min-w-fit min-h-fit border-black p-2 bg-white shadow-md rounded-md text-black">
       {userOrDealer === 1 && productPrice && (
@@ -87,11 +102,11 @@ const SenderSelectionBox = () => {
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
             placeholder="Enter amount"
           />
-          {localAmount && ( // Only show the Confirm button if localAmount is not empty
+          {localAmount && (
             <button
               className="bg-blue-600 text-white px-3 py-1 rounded mt-2"
               onClick={handleConfirm}
-              disabled={updateProductMutation.isPending} // Disable if mutation is pending
+              disabled={updateProductMutation.isPending}
             >
               {updateProductMutation.isPending ? "Confirming..." : "Confirm"}
             </button>
@@ -103,14 +118,14 @@ const SenderSelectionBox = () => {
       <button
         className="bg-green-600 text-white px-3 py-1 rounded mr-2"
         onClick={() => handleSelection("sell")}
-        disabled={userOrDealer === 2 && !isConfirmed} // Disable if userOrDealer is 2 and amount is not confirmed
+        disabled={userOrDealer === 2 && !isConfirmed} 
       >
         sell
       </button>
       <button
         className="bg-green-600 text-white px-3 py-1 rounded"
         onClick={() => handleSelection("swap")}
-        disabled={userOrDealer === 2 && !isConfirmed} // Disable if userOrDealer is 2 and amount is not confirmed
+        disabled={userOrDealer === 2 && !isConfirmed} 
       >
         swap
       </button>

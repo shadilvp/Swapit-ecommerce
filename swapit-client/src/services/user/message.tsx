@@ -1,11 +1,11 @@
 import axiosInstance from "@/utils/axiosInstence"
 
-export const fetchMessages = async (sellerId:String) => {
+export const fetchMessages = async (sellerId:string) => {
     try {
         const response = await axiosInstance.get(`/message/${sellerId}`);
         return response.data.messages;;
     } catch (error) {
-        return null;
+        console.error("something is happened while fetching the messages", error)
     }
 };
 

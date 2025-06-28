@@ -9,13 +9,13 @@ import Button from "@/components/ui/button";
 import Checkbox from "@/components/ui/checkBox1";
 import Input from "@/components/ui/input";
 import Select from "@/components/ui/selectionBox";
-import { Eye, Edit, Trash } from "lucide-react";
+import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useGlobalStore } from '@/store/store';
+import { useGlobalStore } from "@/store/store";
 import DeleteButton from "@/components/ui/deleteIcon";
 import EditButton from "@/components/ui/editButton";
-
-
+import Image from "next/image";
+import { Category, Product } from "@/types";
 
 const NewProducts = () => {
   const router = useRouter();
@@ -28,22 +28,29 @@ const NewProducts = () => {
     minPrice: "",
     maxPrice: "",
   });
-  
+
   const { data, isLoading } = useQuery({
     queryKey: ["products", filters],
     queryFn: () => fetchProducts(filters),
   });
   console.log("admin Shop - Products:", data);
 
-
-  const { data: categories, isLoading: isLoadingCategories, error } = useQuery({
+  const {
+    data: categories,
+    isLoading: isLoadingCategories,
+    error,
+  } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
   });
   const { isCollapsed } = useGlobalStore();
 
   return (
-    <div className={`p-4 bg-white min-h-screen transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
+    <div
+      className={`p-4 bg-white min-h-screen transition-all duration-300 ${
+        isCollapsed ? "ml-16" : "ml-64"
+      }`}
+    >
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Product List</h2>
         <Button onClick={() => router.push("/addProduct")}>Add Product</Button>
@@ -61,7 +68,9 @@ const NewProducts = () => {
 
             {/* Condition Filter */}
             <div className="mt-3">
-              <h3 className="font-semibold text-gray-700">Filter by Condition</h3>
+              <h3 className="font-semibold text-gray-700">
+                Filter by Condition
+              </h3>
               <Checkbox
                 label="New"
                 checked={filters.condition === "new"}
@@ -76,23 +85,35 @@ const NewProducts = () => {
 
             {/* Category Filter */}
             <div className="mt-3">
-              <h3 className="font-semibold text-gray-700">Filter by Category</h3>
+              <h3 className="font-semibold text-gray-700">
+                Filter by Category
+              </h3>
               {isLoadingCategories ? (
                 <p className="text-gray-600">Loading categories...</p>
               ) : error ? (
                 <p className="text-red-500">Error loading categories</p>
               ) : (
-                categories?.map((category: any) => (
+                categories?.map((category: Category) => (
                   <div key={category._id} className="mt-2">
-                    <label className="font-semibold text-gray-700">{category.name}</label>
+                    <label className="font-semibold text-gray-700">
+                      {category.name}
+                    </label>
                     <Select
-                      value={filters.category === category._id ? filters.subCategory : ""}
+                      value={
+                        filters.category === category._id
+                          ? filters.subCategory
+                          : ""
+                      }
                       onChange={(e) =>
-                        setFilters({ ...filters, category: category._id, subCategory: e.target.value })
+                        setFilters({
+                          ...filters,
+                          category: category._id,
+                          subCategory: e.target.value,
+                        })
                       }
                     >
                       <option value="">Select {category.name}</option>
-                      {category.subCategories.map((sub: string) => (
+                      {category.subCategories?.map((sub: string) => (
                         <option key={sub} value={sub}>
                           {sub}
                         </option>
@@ -123,7 +144,6 @@ const NewProducts = () => {
         </DropdownMenu>
       </div>
 
-      {/* Product Table */}
       {isLoading ? (
         <p>Loading products...</p>
       ) : (
@@ -140,32 +160,34 @@ const NewProducts = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.products?.map((product: any, index: number) => (
-              <tr key={product.id} className="text-left border">
+            {data?.products?.map((product: Product, index: number) => (
+              <tr key={product._id} className="text-left border">
                 <td className="border p-2">{index + 1}</td>
                 <td className="border p-2">
-                  <img
+                  <Image
                     src={product.image}
                     alt={product.name}
-                    className="w-10 h-10 object-cover rounded-md"
+                    width={40}
+                    height={40}
+                    className="object-cover rounded-md"
                   />
                 </td>
                 <td className="border p-2">{product.name}</td>
                 <td className="border p-2">${product.price}</td>
                 <td className="border p-2">{product.quantity}</td>
-                <td className="border p-2">{product.category.name}</td>
+                <td className="border p-2">{product.category?.name ?? "No category"}</td>
                 <td className=" p-2 flex justify-around space-x-2">
-                  <button 
-                    className="text-blue-500 hover:text-blue-700" 
-                    onClick={()=>router.push(`/allProducts/${product._id}`)}
+                  <button
+                    className="text-blue-500 hover:text-blue-700"
+                    onClick={() => router.push(`/allProducts/${product._id}`)}
                   >
                     <Eye size={30} />
                   </button>
                   <button className="text-green-500 hover:text-green-700">
-                    <EditButton/>
+                    <EditButton />
                   </button>
                   <button className="text-red-500 hover:text-red-700">
-                    <DeleteButton  />
+                    <DeleteButton />
                   </button>
                 </td>
               </tr>

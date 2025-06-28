@@ -59,8 +59,7 @@ const PeopleReviewCard = () => {
       name: "Neymar",
       photo: photo2,
       text: "Loved the experience.",
-    },
-    // ...add 8 more
+    }
   ];
 
   return (
@@ -68,7 +67,7 @@ const PeopleReviewCard = () => {
       <div className="card-3d">
         {reviews.map((review, index) => (
           <div key={index}>
-            <p className="review-text">"{review.text}"</p>
+            <p className="review-text">{review.text}</p>
             <Image
               className="avatar"
               src={review.photo}

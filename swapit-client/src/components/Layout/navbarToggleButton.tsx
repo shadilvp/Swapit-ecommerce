@@ -6,8 +6,7 @@ import { useGlobalStore } from "@/store/store";
 import AdminPanelName from "../ui/adminPanelName";
 
 const NavbarToggleButton = () => {
-  const {toggleSidebar,isCollapsed} = useGlobalStore  ();
-  // console.log("Sidebar State:", isCollapsed);
+  const {toggleSidebar} = useGlobalStore  ();
   return (
     <nav className=" text-green-600 flex items-center justify-between bg-white shadow p-4">
       <button onClick={toggleSidebar} className="text-xl">

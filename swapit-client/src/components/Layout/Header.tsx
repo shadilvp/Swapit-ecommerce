@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Bell, ShoppingBasket, Search, User } from "lucide-react";
+import { ShoppingBasket, User } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import NotificationDropdown from "./NotificationDropdown";
 import Image from "next/image";

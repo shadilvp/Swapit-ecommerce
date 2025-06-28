@@ -6,6 +6,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addProduct, fetchCategories } from "@/services/product";
 
+import {Category} from "@/types";
+
 
 
 const AddProduct = () => {
@@ -54,17 +56,18 @@ const AddProduct = () => {
     data.append("price", formData.price.toString());
     data.append("image", formData.image);
   
-    // for (let [key, value] of data.entries()) {
-    //   console.log(`${key}: ${value}`);
-    // }
     
-    try {
-      const response = await addProduct(data);
-      alert(response.message);
-      router.push("/allProducts");
-    } catch (error: any) {
-      alert(error.message);
-    }
+try {
+  const response = await addProduct(data);
+  alert(response.message);
+  router.push("/allProducts");
+} catch (error: unknown) {
+  if (error instanceof Error) {
+    alert(error.message);
+  } else {
+    alert("An unexpected error occurred.");
+  }
+}
   };
 
   return (
@@ -105,7 +108,7 @@ const AddProduct = () => {
         required
       >
         <option value="">Select Category</option>
-        {categories?.map((category: any) => (
+        {categories?.map((category: Category) => (
           <option key={category._id} value={category._id}>
             {category.name}
           </option>
@@ -121,7 +124,7 @@ const AddProduct = () => {
         <option value="">Select Subcategory</option>
         {formData.category &&
           categories
-            ?.find((cat: any) => cat._id === formData.category)
+            ?.find((cat: Category) => cat._id === formData.category)
             ?.subCategories.map((sub: string) => (
               <option key={sub} value={sub}>{sub}</option>
             ))}
@@ -162,7 +165,7 @@ const AddProduct = () => {
           <input type="file" accept="image/*" onChange={handleImageChange} required className="w-full mt-3 p-3 border border-gray-300 rounded-lg text-gray-700" />
         </div>
 
-        {/* Buttons */}
+        
         <div className="flex justify-end gap-4 mt-6">
           <button className="px-6 py-3 bg-gray-300 text-black rounded-lg">Discard</button>
           <button

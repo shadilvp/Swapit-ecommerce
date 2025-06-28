@@ -6,9 +6,11 @@ import { useParams, useRouter } from "next/navigation";
 import { fetchSpecificUser } from "@/services/users";
 import Loader from "@/components/ui/simpleLoadder";
 import ChatWithSellerButton from "@/components/ui/chatWithSeller";
+import Image from "next/image";
 
 const ProductDetails = () => {
-  const { productId } = useParams();
+  const rawProductId = useParams().productId;
+  const productId = typeof rawProductId === "string" ? rawProductId : "";
   const router = useRouter();
 
   // Fetch product details
@@ -31,9 +33,10 @@ const ProductDetails = () => {
     enabled: !!sellerId,
   });
 
-  const num = 1
+  const num = 1;
   if (isLoading) return <Loader />;
-  if (error) return <p className="text-center text-red-500">Error fetching product</p>;
+  if (error)
+    return <p className="text-center text-red-500">Error fetching product</p>;
   const handleChat = () => {
     if (sellerId && productId) {
       router.push(`/chat/${sellerId}?productId=${productId}&from=${num}`);
@@ -45,15 +48,20 @@ const ProductDetails = () => {
       <div className="flex flex-col md:flex-row gap-6 max-w-4xl w-full m-20">
         {/* Left: Product Image & Details */}
         <div className="md:w-1/2 w-full bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
-          <img
+          <Image
             src={product.image}
             alt={product.name}
+            width={500}
+            height={320}
             className="w-full h-80 object-cover rounded-lg shadow-md"
+            priority
           />
           <div className="mt-4 text-center">
             <h1 className="text-2xl font-bold text-gray-800">{product.name}</h1>
             <p className="text-gray-600 mt-2">{product.description}</p>
-            <p className="text-green-600 text-lg font-semibold mt-2">${product.price}</p>
+            <p className="text-green-600 text-lg font-semibold mt-2">
+              ${product.price}
+            </p>
           </div>
         </div>
 
@@ -73,7 +81,9 @@ const ProductDetails = () => {
             ) : sellerError ? (
               <p className="text-red-500">Error fetching seller</p>
             ) : (
-              <p className="text-gray-700">{sellerData?.user?.name || "Unknown Seller"}</p>
+              <p className="text-gray-700">
+                {sellerData?.user?.name || "Unknown Seller"}
+              </p>
             )}
             <div className="mt-2 w-full items-center" onClick={handleChat}>
               <ChatWithSellerButton />
