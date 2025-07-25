@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import joi from "joi";
 
 const adminSchema = new mongoose.Schema(
