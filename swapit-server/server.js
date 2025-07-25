@@ -31,7 +31,7 @@ app.use(errorHandler)
 app.use(cookieParser());
 
 app.use(cors({
-  origin: [clientUrl],
+  origin: [clientUrl, "https://swapit-ecommerce.vercel.app"],
   allowedHeaders: "Content-Type,Authorization",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"],
@@ -58,7 +58,7 @@ app.get('*', (req, res) => {
 
 const io = new Server(server, {
   cors: {
-    origin: [clientUrl],
+    origin: [clientUrl, "https://swapit-ecommerce.vercel.app"],
     credentials: true,
   },
 });
