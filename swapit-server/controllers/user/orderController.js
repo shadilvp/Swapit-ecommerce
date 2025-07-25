@@ -1,5 +1,5 @@
 import { Address } from "../../models/addressModel.js";
-import { Order } from "../../models/orderModel.js";
+import { Order } from "../../models/OrderModel.js";
 import { Product } from "../../models/productModel.js";
 import { User } from "../../models/userModel.js";
 import Razorpay from 'razorpay';

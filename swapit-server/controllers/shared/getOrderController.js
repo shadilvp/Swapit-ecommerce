@@ -1,4 +1,4 @@
-import { Order } from "../../models/orderModel";
+import { Order } from "../../models/OrderModel.js"; 
 
 
 export const getSpecificUserOrders = async (req, res) => {
