@@ -8,6 +8,7 @@ const server = http.createServer(app);
 
 dotenv.config()
 const port = process.env.PORT || 4001
+const clientUrl = process.env.CLIENT_URL
 
 import authRouter from "./routes/authRouter.js";
 import productRouter from "./routes/productRouter.js";
@@ -30,7 +31,7 @@ app.use(errorHandler)
 app.use(cookieParser());
 
 app.use(cors({
-  origin: ["http://localhost:3000"],
+  origin: [clientUrl],
   allowedHeaders: "Content-Type,Authorization",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"],
@@ -57,7 +58,7 @@ app.get('*', (req, res) => {
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "http://51.21.252.76", "https://swapit.duckdns.org"],
+    origin: [clientUrl],
     credentials: true,
   },
 });
